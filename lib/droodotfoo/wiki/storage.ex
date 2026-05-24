@@ -106,19 +106,31 @@ defmodule Droodotfoo.Wiki.Storage do
   end
 
   defp probe_storage do
-    task =
-      Task.async(fn ->
-        case ExAws.S3.head_bucket(wiki_bucket()) |> ExAws.request() do
-          {:ok, _} -> true
-          _ -> false
-        end
-      end)
+    if configured?() do
+      task =
+        Task.async(fn ->
+          try do
+            case ExAws.S3.head_bucket(wiki_bucket()) |> ExAws.request() do
+              {:ok, _} -> true
+              _ -> false
+            end
+          rescue
+            _ -> false
+          catch
+            :exit, _ -> false
+          end
+        end)
 
-    case Task.yield(task, @availability_probe_timeout) || Task.shutdown(task, :brutal_kill) do
-      {:ok, result} -> result
-      _ -> false
+      case Task.yield(task, @availability_probe_timeout) || Task.shutdown(task, :brutal_kill) do
+        {:ok, result} -> result
+        _ -> false
+      end
+    else
+      false
     end
   end
+
+  defp configured?, do: Application.get_env(:ex_aws, :access_key_id) != nil
 
   # Key construction
 

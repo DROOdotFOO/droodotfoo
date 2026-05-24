@@ -93,7 +93,17 @@ RUN apt-get update \
     libstdc++6 openssl libncurses5 locales ca-certificates \
     chromium chromium-sandbox \
     poppler-utils \
+    iptables iproute2 wget \
   && rm -rf /var/lib/apt/lists/*
+
+# Install Tailscale (TUN mode reaches MinIO at 100.117.205.87 on the tailnet)
+ARG TAILSCALE_VERSION=1.98.3
+RUN wget --quiet "https://pkgs.tailscale.com/stable/tailscale_${TAILSCALE_VERSION}_amd64.tgz" -O /tmp/ts.tgz \
+  && tar xzf /tmp/ts.tgz -C /usr/local/bin --strip-components=1 \
+       "tailscale_${TAILSCALE_VERSION}_amd64/tailscale" \
+       "tailscale_${TAILSCALE_VERSION}_amd64/tailscaled" \
+  && rm /tmp/ts.tgz \
+  && mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
@@ -110,13 +120,18 @@ RUN chown nobody /app
 ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/droodotfoo ./
+COPY --from=builder /app/_build/${MIX_ENV}/rel/droodotfoo ./
 
-USER nobody
+# Copy Fly entrypoint (starts tailscaled before the app)
+COPY rel/start-fly.sh /app/start-fly.sh
+RUN chmod +x /app/start-fly.sh
+
+# Run as root so tailscaled can manage TUN/iptables. Fly's container
+# isolation handles the security boundary.
 
 # If using an environment that doesn't automatically reap zombie processes, it is
 # advised to add an init process such as tini via `apt-get install`
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
-CMD ["/app/bin/server"]
+CMD ["/app/start-fly.sh"]
