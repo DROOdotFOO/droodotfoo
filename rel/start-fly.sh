@@ -16,10 +16,9 @@ if [[ -n "${TS_AUTHKEY:-}" ]]; then
 
   printf 'authenticating with tailnet\n'
   /usr/local/bin/tailscale up \
-    --authkey="${TS_AUTHKEY}" \
+    --auth-key="${TS_AUTHKEY}" \
     --hostname="fly-droodotfoo-${FLY_MACHINE_ID:-unknown}" \
-    --accept-dns=false \
-    --ephemeral
+    --accept-dns=false
 
   printf 'tailscale ip: %s\n' "$(/usr/local/bin/tailscale ip -4 2>/dev/null || printf 'unknown')"
 else
