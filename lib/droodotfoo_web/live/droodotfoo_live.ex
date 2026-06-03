@@ -37,6 +37,7 @@ defmodule DroodotfooWeb.DroodotfooLive do
     {:ok,
      socket
      |> assign(:latest_posts, latest_posts)
+     |> assign(:shipped, Droodotfoo.Contributions.recent(2))
      |> assign(:json_ld, json_ld)
      |> assign(:current_path, "/")}
   end
@@ -48,6 +49,17 @@ defmodule DroodotfooWeb.DroodotfooLive do
       <.site_header />
 
       <.site_nav current_path={@current_path} />
+
+      <section class="section-spaced">
+        <h2 class="section-header-bordered">
+          SHIPPED
+        </h2>
+        <p class="text-muted-alt">Recent work merged upstream.</p>
+        <.upstream_contributions contributions={@shipped} />
+        <p class="text-muted-alt">
+          Full list: <.link navigate={~p"/projects"}>projects</.link>.
+        </p>
+      </section>
 
       <%= if length(@latest_posts) > 0 do %>
         <section class="section-spaced">
