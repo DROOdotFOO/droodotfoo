@@ -49,7 +49,7 @@ defmodule DroodotfooWeb.NowLive do
           {Date.to_string(@last_updated)}
         </div>
 
-        <h3 class="mt-2">Recently shipped</h3>
+        <h2 class="section-title">Recently shipped</h2>
         <p class="text-muted">Upstream work merged into other projects.</p>
         <.upstream_contributions contributions={@recent_contributions} />
         <p class="text-muted">
@@ -58,7 +58,7 @@ defmodule DroodotfooWeb.NowLive do
 
         <hr />
 
-        <h3 class="mt-2">Running</h3>
+        <h2 class="section-title">Running</h2>
         <p>
           <.ext_link href="https://xochi.fi" text="xochi.fi" />
           : private exchange & friendly dark pool on Ethereum. ZK compliance via
@@ -116,7 +116,7 @@ defmodule DroodotfooWeb.NowLive do
 
         <hr />
 
-        <h3 class="mt-2">Learning</h3>
+        <h2 class="section-title">Learning</h2>
 
         <details class="experience-details" open>
           <summary class="experience-summary">Current reading list</summary>
@@ -148,7 +148,7 @@ defmodule DroodotfooWeb.NowLive do
 
         <hr />
 
-        <h3 class="mt-2">Location</h3>
+        <h2 class="section-title">Location</h2>
         <p>
           {@resume.personal_info.location} ({@resume.personal_info.timezone}). Remote.
         </p>

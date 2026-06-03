@@ -43,7 +43,7 @@ dd {
 /* Project Cards Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(20ch, 100%), 1fr));
   gap: 1.5rem;
   margin: 1.5rem 0;
 }
@@ -179,6 +179,10 @@ dd {
 .contributions-section,
 .projects-section {
   margin: 2rem 0;
+}
+
+.contribution-item::before {
+  content: "→";
 }
 
 .contribution-item .experience-header {
