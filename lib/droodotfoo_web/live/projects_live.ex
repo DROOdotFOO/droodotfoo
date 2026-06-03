@@ -29,6 +29,7 @@ defmodule DroodotfooWeb.ProjectsLive do
      socket
      |> assign(
        projects: projects,
+       contributions: Droodotfoo.Contributions.all(),
        page_title: "Projects",
        current_path: "/projects",
        json_ld: json_ld,
@@ -71,11 +72,21 @@ defmodule DroodotfooWeb.ProjectsLive do
         loading={@contributions_loading}
       />
 
-      <div class="projects-grid">
-        <%= for project <- @projects do %>
-          <.project_card project={project} />
-        <% end %>
-      </div>
+      <section class="contributions-section">
+        <h2 class="section-title">Upstream contributions</h2>
+        <p class="text-muted">Work merged into other projects.</p>
+        <.upstream_contributions contributions={@contributions} />
+      </section>
+
+      <section class="projects-section">
+        <h2 class="section-title">Maintained projects</h2>
+        <p class="text-muted">Open source I author and maintain.</p>
+        <div class="projects-grid">
+          <%= for project <- @projects do %>
+            <.project_card project={project} />
+          <% end %>
+        </div>
+      </section>
     </.page_layout>
     """
   end

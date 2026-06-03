@@ -367,6 +367,46 @@ defmodule DroodotfooWeb.ContentComponents do
   end
 
   @doc """
+  Renders a list of upstream open-source contributions.
+
+  Each entry reuses the `.experience-item` timeline pattern: project name as
+  title, type badge (`merged`, `draft ERC`, `extension`, `docs`), description,
+  date, and tag list. The whole title links to the upstream PR / spec.
+  """
+  attr :contributions, :list, required: true
+
+  def upstream_contributions(assigns) do
+    ~H"""
+    <%= for c <- @contributions do %>
+      <article class="experience-item contribution-item">
+        <div class="experience-header">
+          <div class="experience-title">
+            <.ext_link href={c.url} text={c.project} />
+            <span class={["contribution-type", contribution_class(c.type)]}>
+              {Droodotfoo.Contributions.type_label(c.type)}
+            </span>
+          </div>
+          <div class="experience-company">{c.date}</div>
+        </div>
+
+        <p class="experience-description">
+          <strong>{c.title}.</strong>
+          {c.description}
+        </p>
+
+        <.tech_tags technologies={c.tags} />
+      </article>
+    <% end %>
+    """
+  end
+
+  defp contribution_class(:merged), do: "status-active"
+  defp contribution_class(:standard), do: "status-active"
+  defp contribution_class(:extension), do: "status-done"
+  defp contribution_class(:docs), do: "status-done"
+  defp contribution_class(_), do: "status-done"
+
+  @doc """
   Interactive technology chip buttons.
   Can be clicked and toggled, typically used for filtering.
   """

@@ -40,6 +40,7 @@ defmodule Droodotfoo.Resume.ResumeData do
     :experience,
     :education,
     :defense_projects,
+    :upstream_contributions,
     :portfolio,
     :certifications,
     :contact
@@ -53,6 +54,7 @@ defmodule Droodotfoo.Resume.ResumeData do
           experience: list(map()),
           education: list(map()),
           defense_projects: list(map()),
+          upstream_contributions: list(map()),
           portfolio: map(),
           certifications: list(map()),
           contact: map()
@@ -352,6 +354,65 @@ defmodule Droodotfoo.Resume.ResumeData do
               "All-American Skipper/Crew for Competitive Dinghy and Offshore Sailing"
             ]
           }
+        }
+      ],
+      upstream_contributions: [
+        %{
+          project: "FFmpeg",
+          title: "aarch64 NEON optimizations for swscale yuv2rgb",
+          description:
+            "ARM NEON assembly for YUV->RGB color space conversion and threshold filter. 19 commits merged to master.",
+          url: "https://git.ffmpeg.org/gitweb/ffmpeg.git/log/?qt=author&q=DROOdotFOO",
+          type: "merged",
+          date: "2026-05",
+          tags: ["C", "aarch64", "NEON", "SIMD", "swscale"]
+        },
+        %{
+          project: "Ethereum ERCs",
+          title: "ERC-8262: Zero-Knowledge Compliance Oracle (co-author)",
+          description:
+            "Six proof types in Noir circuits with multi-jurisdiction policy framework. Draft status on the Ethereum standards track.",
+          url: "https://github.com/ethereum/ERCs/pull/1747",
+          type: "standard",
+          date: "2026-04",
+          tags: ["Noir", "Solidity", "ZK", "EIP"]
+        },
+        %{
+          project: "Dappnode",
+          title: "Charon health check fix (Obol DVT package)",
+          description: "Fixed Charon health probe in Dappnode's Obol DVT generic package.",
+          url: "https://github.com/dappnode/DAppNodePackage-obol-generic/pull/90",
+          type: "merged",
+          date: "2026-01",
+          tags: ["Obol", "DVT", "Charon"]
+        },
+        %{
+          project: "Dappnode",
+          title: "Avado migration guide",
+          description: "Migration documentation from Avado to Dappnode.",
+          url: "https://github.com/dappnode/DAppNodeDocs/pull/423",
+          type: "docs",
+          date: "2024-08",
+          tags: ["docs", "Dappnode"]
+        },
+        %{
+          project: "Zed",
+          title: "aztec-noir language extension",
+          description:
+            "Noir LSP and tree-sitter syntax for Aztec contracts, published to the Zed marketplace.",
+          url: "https://github.com/zed-industries/extensions/tree/main/extensions/aztec-noir",
+          type: "extension",
+          date: "2026-05",
+          tags: ["Zed", "Noir", "Aztec"]
+        },
+        %{
+          project: "Zed",
+          title: "synthwave84 theme",
+          description: "Synthwave84 theme published to the Zed marketplace.",
+          url: "https://github.com/zed-industries/extensions/tree/main/extensions/synthwave84",
+          type: "extension",
+          date: "2025-07",
+          tags: ["Zed", "theme"]
         }
       ],
       defense_projects: [

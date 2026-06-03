@@ -21,6 +21,7 @@ defmodule DroodotfooWeb.NowLive do
     socket
     |> assign(:resume, resume)
     |> assign(:last_updated, last_updated)
+    |> assign(:recent_contributions, Droodotfoo.Contributions.recent(3))
     |> assign_page_meta("Now", "/now", breadcrumb_json_ld("Now", "/now"))
     |> assign(DroodotfooWeb.ContributionHelpers.contribution_assigns())
     |> then(&{:ok, &1})
@@ -47,6 +48,15 @@ defmodule DroodotfooWeb.NowLive do
           <strong>Last updated:</strong>
           {Date.to_string(@last_updated)}
         </div>
+
+        <h3 class="mt-2">Recently shipped</h3>
+        <p class="text-muted">Upstream work merged into other projects.</p>
+        <.upstream_contributions contributions={@recent_contributions} />
+        <p class="text-muted">
+          Full list: <.link navigate={~p"/projects"}>projects</.link>.
+        </p>
+
+        <hr />
 
         <h3 class="mt-2">Running</h3>
         <p>
@@ -103,11 +113,6 @@ defmodule DroodotfooWeb.NowLive do
 
           <.tech_tags technologies={["Elixir", "OTP", "x402"]} />
         </article>
-
-        <p class="mt-2 text-muted">
-          Other FOSS: mana (Ethereum client), riddler (intent solver).
-          See <.link navigate={~p"/projects"}>projects</.link>.
-        </p>
 
         <hr />
 
