@@ -188,7 +188,7 @@
     <%= if assigns[:json_ld] do %>
       <%= for schema <- List.wrap(assigns[:json_ld]) do %>
         <script type="application/ld+json" nonce={@csp_nonce}>
-          {raw(schema)}
+          <%= raw(schema) %>
         </script>
       <% end %>
     <% end %>

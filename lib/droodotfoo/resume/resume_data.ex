@@ -158,9 +158,9 @@ defmodule Droodotfoo.Resume.ResumeData do
         }
       },
       summary:
-        "Blockchain infrastructure engineer with 3+ years in Web3 and 5+ years in defense R&D. Nuclear submarine background with track record of delivering measurable impact and optimizing complex systems.",
+        "Building blockchain infrastructure (mana Ethereum client, raxol terminal framework) for Cosmos and Ethereum. Previously: nuclear submarine engineering where bugs had operational consequences, competitive intelligence at LidoDAO. Preference for systems where correctness matters more than speed.",
       availability: "open_to_consulting",
-      focus_areas: ["Cosmos SDK", "Ethereum Protocol", "Validator Infrastructure"],
+      focus_areas: ["Ethereum Protocol", "Zero-Knowledge Circuits", "Validator Infrastructure"],
       experience: [
         %{
           company: "xochi.fi",
@@ -172,7 +172,7 @@ defmodule Droodotfoo.Resume.ResumeData do
           description:
             "Dark pool DEX solving the compliance-privacy problem on Ethereum. Intent-based trading settled into stealth accounts or Aztec shielded notes across five chains. ZKP compliance oracle proves AML/sanctions compliance without revealing transaction data.",
           achievements: [
-            "Designed and authored ERC for the Xochi ZKP Compliance Oracle with six proof types in Noir",
+            "Co-authored ERC-8262 (Zero-Knowledge Compliance Oracle) with six proof types in Noir, now on the Ethereum standards track",
             "Built Riddler, a cross-chain intent solver with <6s latency across Ethereum, Optimism, Base, Arbitrum, and Polygon",
             "Architected privacy tier system combining trust scores with stealth addresses (ERC-5564) and account abstraction (ERC-4337)"
           ],

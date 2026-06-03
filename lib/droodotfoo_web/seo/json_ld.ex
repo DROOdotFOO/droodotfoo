@@ -26,11 +26,16 @@ defmodule DroodotfooWeb.SEO.JsonLD do
         "url" => "https://github.com/axol-io"
       },
       "description" =>
-        "Engineer building his Gundam - Building blockchain infrastructure and production-grade FOSS tooling for Cosmos and EVM ecosystems",
+        "Engineer building his Gundam - Blockchain infrastructure, zero-knowledge compliance standards, and production-grade FOSS tooling. FFmpeg contributor, ERC-8262 co-author.",
       "knowsAbout" => [
         "Blockchain",
         "Elixir",
         "Ethereum",
+        "Zero-Knowledge Circuits",
+        "Noir",
+        "Aztec",
+        "NEON SIMD",
+        "ERC Standards",
         "Phoenix Framework",
         "Web3",
         "Distributed Systems"

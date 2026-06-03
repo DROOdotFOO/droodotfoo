@@ -155,7 +155,7 @@ defmodule DroodotfooWeb.NowLive do
 
         <%= if @resume.availability == "open_to_consulting" do %>
           <p class="mt-1 text-muted">
-            Open to consulting. Cosmos SDK, Ethereum clients, node ops. <.link navigate={~p"/about"}>Background</.link>.
+            Open to consulting. Ethereum protocol, ZK circuits, validator infra. <.link navigate={~p"/about"}>Background</.link>.
           </p>
         <% end %>
 

@@ -204,6 +204,14 @@ dd {
   font-weight: var(--font-weight-normal);
 }
 
+.contribution-type::before {
+  content: "[";
+}
+
+.contribution-type::after {
+  content: "]";
+}
+
 .contribution-item .experience-company {
   font-variant-numeric: tabular-nums;
   color: var(--text-color-alt);
