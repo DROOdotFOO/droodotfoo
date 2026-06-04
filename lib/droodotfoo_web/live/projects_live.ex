@@ -4,7 +4,7 @@ defmodule DroodotfooWeb.ProjectsLive do
   use DroodotfooWeb, :live_view
   use DroodotfooWeb.ContributionHelpers
   alias Droodotfoo.GitHub.LanguageColors
-  alias Droodotfoo.{Projects, Zed}
+  alias Droodotfoo.Projects
   alias DroodotfooWeb.SEO.JsonLD
   import DroodotfooWeb.{ContentComponents, GithubComponents}
 
@@ -43,7 +43,6 @@ defmodule DroodotfooWeb.ProjectsLive do
     enriched_projects =
       Projects.with_github_data()
       |> Projects.with_forgejo_mirrors()
-      |> enrich_zed_downloads()
 
     json_ld = [
       JsonLD.breadcrumb_schema([{"Home", "/"}, {"Projects", "/projects"}])
@@ -143,28 +142,6 @@ defmodule DroodotfooWeb.ProjectsLive do
       </footer>
     </article>
     """
-  end
-
-  # Zed extension IDs mapped to project names
-  @zed_extensions %{"synthwave84_zed" => "synthwave84"}
-
-  defp enrich_zed_downloads(projects) do
-    Enum.map(projects, fn project ->
-      case Map.get(@zed_extensions, project.id) do
-        nil ->
-          project
-
-        ext_id ->
-          case Zed.download_count(ext_id) do
-            {:ok, count} ->
-              desc = "#{project.description} (#{Zed.format_count(count)} installs)"
-              %{project | description: desc}
-
-            _ ->
-              project
-          end
-      end
-    end)
   end
 
   defp extract_github_meta(%{github_data: %{status: :ok}} = project) do

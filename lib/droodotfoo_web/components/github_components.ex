@@ -17,7 +17,10 @@ defmodule DroodotfooWeb.GithubComponents do
 
   def contribution_graph(assigns) do
     ~H"""
-    <div id={@id} phx-hook="ContributionGraphHook">
+    <figure id={@id} phx-hook="ContributionGraphHook" aria-labelledby={"#{@id}-caption"}>
+      <figcaption id={"#{@id}-caption"} class="sr-only">
+        GitHub contribution activity over the past year
+      </figcaption>
       <.contrib_loading :if={@loading} />
       <div :if={!@loading && @grid}>
         <.contrib_grid grid={@grid} />
@@ -25,7 +28,7 @@ defmodule DroodotfooWeb.GithubComponents do
       </div>
       <p :if={!@loading && !@grid} class="text-muted">Unable to load contribution data.</p>
       <div class="contrib-tooltip"></div>
-    </div>
+    </figure>
     """
   end
 

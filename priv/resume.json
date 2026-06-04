@@ -396,28 +396,6 @@
         ]
       },
       {
-        "name": "synthwave84-zed",
-        "url": "https://github.com/DROOdotFOO/synthwave84-zed",
-        "description": "Synthwave84 theme for Zed editor",
-        "language": "Shell",
-        "status": "active",
-        "highlights": [
-          "Ported Synthwave84 aesthetic to Zed's theme system",
-          "Monaspace font configuration included"
-        ]
-      },
-      {
-        "name": "zoir",
-        "url": "https://github.com/DROOdotFOO/zoir",
-        "description": "Noir language support for Zed",
-        "language": "Rust",
-        "status": "active",
-        "highlights": [
-          "Full Noir syntax highlighting via tree-sitter",
-          "Zed extension for zero-knowledge development"
-        ]
-      },
-      {
         "name": "tree-sitter-noir",
         "url": "https://github.com/DROOdotFOO/tree-sitter-noir",
         "description": "Tree-sitter grammar for Noir language",
@@ -425,7 +403,7 @@
         "status": "active",
         "highlights": [
           "Complete Noir syntax parsing",
-          "Powers zoir and other editor integrations"
+          "Powers Noir tooling across editors and language servers"
         ]
       },
       {

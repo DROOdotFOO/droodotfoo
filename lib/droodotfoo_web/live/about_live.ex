@@ -87,6 +87,25 @@ defmodule DroodotfooWeb.AboutLive do
           is the terminal framework behind it. It started as a TUI project, but now it's the agent commerce layer for Xochi: wallets that can act on their own.
         </p>
         <p class="mt-1">
+          When something I depend on can be made faster or fixed, I send it upstream. Recent: ARM NEON
+          optimizations in
+          <.ext_link
+            href="https://git.ffmpeg.org/gitweb/ffmpeg.git/log/?qt=author&q=DROOdotFOO"
+            text="FFmpeg"
+          />, a Charon health check fix in Dappnode's
+          <.ext_link
+            href="https://github.com/dappnode/DAppNodePackage-obol-generic/pull/90"
+            text="Obol DVT package"
+          />, and two extensions
+          (<.ext_link
+            href="https://github.com/zed-industries/extensions/tree/main/extensions/aztec-noir"
+            text="aztec-noir"
+          />, <.ext_link
+            href="https://github.com/zed-industries/extensions/tree/main/extensions/synthwave84"
+            text="synthwave84"
+          />) in the Zed marketplace.
+        </p>
+        <p class="mt-1">
           The open infrastructure underneath Xochi (Mana, the ZK compliance standard, the stealth address primitives, the whitehat research) is
           <.ext_link
             href="https://giveth.io/project/axolio-xochifi"
