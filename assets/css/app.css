@@ -12,7 +12,6 @@
 @import "./syntax_highlighting.css"; /* Code syntax highlighting */
 
 /* === LAYOUT === */
-@import "./layout.css";            /* Container positioning */
 @import "./content_layout.css";    /* Content page layout */
 
 /* === SHARED COMPONENTS === */
