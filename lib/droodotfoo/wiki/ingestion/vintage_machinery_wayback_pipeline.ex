@@ -277,40 +277,8 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryWaybackPipeline do
     end)
   end
 
-  defp rewrite_wayback_links(doc) do
-    Floki.traverse_and_update(doc, fn
-      {"a", attrs, children} ->
-        new_attrs = rewrite_href(attrs)
-        {"a", new_attrs, children}
-
-      {"img", attrs, children} ->
-        new_attrs = rewrite_src(attrs)
-        {"img", new_attrs, children}
-
-      other ->
-        other
-    end)
-  end
-
-  defp rewrite_href(attrs) do
-    Enum.map(attrs, fn
-      {"href", href} when is_binary(href) ->
-        {"href", clean_wayback_url(href)}
-
-      other ->
-        other
-    end)
-  end
-
-  defp rewrite_src(attrs) do
-    Enum.map(attrs, fn
-      {"src", src} when is_binary(src) ->
-        {"src", clean_wayback_url(src)}
-
-      other ->
-        other
-    end)
-  end
+  defp rewrite_wayback_links(doc),
+    do: Common.rewrite_links(doc, &clean_wayback_url/1, &clean_wayback_url/1)
 
   defp clean_wayback_url(url) do
     # Remove Wayback Machine prefix if present

@@ -185,31 +185,12 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaPipeline do
     end)
   end
 
-  defp rewrite_links(doc) do
-    Floki.traverse_and_update(doc, fn
-      {"a", attrs, children} ->
-        {"a", rewrite_href(attrs), children}
+  defp rewrite_links(doc), do: Common.rewrite_links(doc, &rewrite_href/1, &rewrite_src/1)
 
-      {"img", attrs, children} ->
-        {"img", rewrite_src(attrs), children}
+  defp rewrite_href("./wiki/" <> slug), do: "/wikipedia/#{slug}"
+  defp rewrite_href("/wiki/" <> slug), do: "/wikipedia/#{slug}"
+  defp rewrite_href(other), do: other
 
-      other ->
-        other
-    end)
-  end
-
-  defp rewrite_href(attrs) do
-    Enum.map(attrs, fn
-      {"href", "./wiki/" <> slug} -> {"href", "/wikipedia/#{slug}"}
-      {"href", "/wiki/" <> slug} -> {"href", "/wikipedia/#{slug}"}
-      other -> other
-    end)
-  end
-
-  defp rewrite_src(attrs) do
-    Enum.map(attrs, fn
-      {"src", "//" <> rest} -> {"src", "https://#{rest}"}
-      other -> other
-    end)
-  end
+  defp rewrite_src("//" <> rest), do: "https://#{rest}"
+  defp rewrite_src(other), do: other
 end

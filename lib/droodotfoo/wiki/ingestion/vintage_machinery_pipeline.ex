@@ -164,42 +164,8 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryPipeline do
     end)
   end
 
-  defp rewrite_links(doc) do
-    Floki.traverse_and_update(doc, fn
-      {"a", attrs, children} ->
-        new_attrs = rewrite_href(attrs)
-        {"a", new_attrs, children}
-
-      {"img", attrs, children} ->
-        new_attrs = rewrite_src(attrs)
-        {"img", new_attrs, children}
-
-      other ->
-        other
-    end)
-  end
-
-  defp rewrite_href(attrs) do
-    Enum.map(attrs, fn
-      {"href", href} when is_binary(href) ->
-        new_href = normalize_link(href)
-        {"href", new_href}
-
-      other ->
-        other
-    end)
-  end
-
-  defp rewrite_src(attrs) do
-    Enum.map(attrs, fn
-      {"src", src} when is_binary(src) ->
-        new_src = normalize_image_link(src)
-        {"src", new_src}
-
-      other ->
-        other
-    end)
-  end
+  defp rewrite_links(doc),
+    do: Common.rewrite_links(doc, &normalize_link/1, &normalize_image_link/1)
 
   defp normalize_link("http" <> _ = href), do: href
   defp normalize_link("#" <> _ = href), do: href
