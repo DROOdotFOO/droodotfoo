@@ -320,7 +320,7 @@ defmodule Droodotfoo.Wiki.Content do
       Cache.invalidate(article.source, article.slug)
 
       # Create revision
-      content_hash = :crypto.hash(:sha256, new_html) |> Base.encode16(case: :lower)
+      content_hash = Droodotfoo.Hash.sha256_hex(new_html)
 
       %Revision{}
       |> Revision.changeset(%{

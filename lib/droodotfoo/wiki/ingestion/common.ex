@@ -17,9 +17,7 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
   Returns lowercase hex-encoded hash string.
   """
   @spec hash_content(String.t()) :: String.t()
-  def hash_content(content) do
-    :crypto.hash(:sha256, content) |> Base.encode16(case: :lower)
-  end
+  def hash_content(content), do: Droodotfoo.Hash.sha256_hex(content)
 
   @doc """
   Extract plain text from HTML for full-text search indexing.

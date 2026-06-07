@@ -297,7 +297,5 @@ defmodule Droodotfoo.Wiki.WikiArt do
     |> String.replace("\"", "&quot;")
   end
 
-  defp hash_content(html) do
-    :crypto.hash(:sha256, html) |> Base.encode16(case: :lower)
-  end
+  defp hash_content(html), do: Droodotfoo.Hash.sha256_hex(html)
 end

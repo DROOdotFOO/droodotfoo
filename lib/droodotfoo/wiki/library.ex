@@ -244,9 +244,7 @@ defmodule Droodotfoo.Wiki.Library do
   Compute SHA256 hash of content.
   """
   @spec compute_hash(binary()) :: String.t()
-  def compute_hash(content) do
-    :crypto.hash(:sha256, content) |> Base.encode16(case: :lower)
-  end
+  def compute_hash(content), do: Droodotfoo.Hash.sha256_hex(content)
 
   defp revision_file_key(%Document{slug: slug} = document) do
     timestamp = DateTime.utc_now() |> DateTime.to_unix()
