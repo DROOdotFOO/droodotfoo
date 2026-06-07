@@ -71,4 +71,12 @@ defmodule Droodotfoo.Wiki.Ingestion.CommonTest do
       assert result == doc
     end
   end
+
+  describe "log_operation/3" do
+    test "accepts :insert and :update with source_label and title and returns :ok" do
+      assert :ok = Common.log_operation(:insert, "Wikipedia article", "Foo")
+      assert :ok = Common.log_operation(:update, "OSRS article", "Bar")
+      assert :ok = Common.log_operation(:insert, "VintageMachinery (Wayback)", "Drill press")
+    end
+  end
 end

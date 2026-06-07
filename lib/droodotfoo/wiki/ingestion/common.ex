@@ -225,6 +225,26 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
   end
 
   @doc """
+  Logs a create/update operation in the standard ingestion format.
+
+  ## Example
+
+      Common.log_operation(:insert, "Wikipedia article", "Riemann hypothesis")
+      # -> [info] Created Wikipedia article: Riemann hypothesis
+
+  """
+  @spec log_operation(:insert | :update, String.t(), String.t()) :: :ok
+  def log_operation(:insert, source_label, title) do
+    require Logger
+    Logger.info("Created #{source_label}: #{title}")
+  end
+
+  def log_operation(:update, source_label, title) do
+    require Logger
+    Logger.info("Updated #{source_label}: #{title}")
+  end
+
+  @doc """
   Persist an article to the database (insert or update).
 
   ## Examples
