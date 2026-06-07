@@ -125,20 +125,17 @@ defmodule Droodotfoo.Wiki.Ingestion.WaybackClient do
     ts = timestamp || "2"
     wayback_url = "#{@wayback_base}/#{ts}id_/#{url}"
 
-    case Req.get(wayback_url, receive_timeout: 30_000) do
-      {:ok, %{status: 200, body: body}} ->
-        {:ok, body}
-
-      {:ok, %{status: 404}} ->
-        {:error, :not_found}
-
-      {:ok, %{status: status}} ->
-        {:error, {:http_error, status}}
-
-      {:error, reason} ->
-        {:error, {:request_error, reason}}
-    end
+    wayback_url
+    |> Req.get(receive_timeout: 30_000)
+    |> handle_response()
   end
+
+  @doc false
+  # Public for characterization tests. Internal helper otherwise.
+  def handle_response({:ok, %{status: 200, body: body}}), do: {:ok, body}
+  def handle_response({:ok, %{status: 404}}), do: {:error, :not_found}
+  def handle_response({:ok, %{status: status}}), do: {:error, {:http_error, status}}
+  def handle_response({:error, reason}), do: {:error, {:request_error, reason}}
 
   @doc """
   Fetch snapshot with metadata (timestamp, original URL).
