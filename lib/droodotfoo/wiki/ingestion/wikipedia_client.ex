@@ -176,8 +176,5 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaClient do
 
   defp base_url, do: config(:base_url) || "https://en.wikipedia.org/api/rest_v1"
 
-  defp config(key) do
-    Application.get_env(:droodotfoo, __MODULE__, [])
-    |> Keyword.get(key)
-  end
+  defp config(key), do: Droodotfoo.Wiki.Ingestion.Common.module_config(__MODULE__, key)
 end

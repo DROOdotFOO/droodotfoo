@@ -325,8 +325,5 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryClient do
     end
   end
 
-  defp config(key) do
-    Application.get_env(:droodotfoo, __MODULE__, [])
-    |> Keyword.get(key)
-  end
+  defp config(key), do: Droodotfoo.Wiki.Ingestion.Common.module_config(__MODULE__, key)
 end

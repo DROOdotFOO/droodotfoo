@@ -494,8 +494,5 @@ defmodule Droodotfoo.Wiki.Ingestion.MediaWikiClient do
     :ets.insert(@rate_limit_table, {:last_request, System.monotonic_time(:millisecond)})
   end
 
-  defp config(key) do
-    Application.get_env(:droodotfoo, __MODULE__, [])
-    |> Keyword.get(key)
-  end
+  defp config(key), do: Droodotfoo.Wiki.Ingestion.Common.module_config(__MODULE__, key)
 end
