@@ -144,10 +144,12 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaClient do
     |> handle_response()
   end
 
-  defp handle_response({:ok, %{status: 200, body: body}}), do: {:ok, body}
-  defp handle_response({:ok, %{status: 404}}), do: {:error, :not_found}
-  defp handle_response({:ok, %{status: status}}), do: {:error, {:http_error, status}}
-  defp handle_response({:error, reason}), do: {:error, reason}
+  @doc false
+  # Public for characterization tests. Internal helper otherwise.
+  def handle_response({:ok, %{status: 200, body: body}}), do: {:ok, body}
+  def handle_response({:ok, %{status: 404}}), do: {:error, :not_found}
+  def handle_response({:ok, %{status: status}}), do: {:error, {:http_error, status}}
+  def handle_response({:error, reason}), do: {:error, reason}
 
   defp headers do
     [
