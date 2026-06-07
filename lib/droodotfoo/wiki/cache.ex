@@ -9,6 +9,24 @@ defmodule Droodotfoo.Wiki.Cache do
   1. Cloudflare edge - respects Cache-Control headers
   2. Cachex - 15 min TTL, 10K entry limit, read-through
   3. MinIO + Postgres - source of truth
+
+  ## Why not Performance.Cache?
+
+  Performance.Cache covers the rest of the app and would let us drop Cachex.
+  It is not a drop-in replacement here for two reasons:
+
+  1. `Performance.Cache.fetch/4` is `get; if miss, compute and put` with no
+     per-key locking, so two concurrent requests for the same article both
+     hit MinIO. Cachex.fetch/3 blocks subsequent callers until the first
+     load returns. Under bursty traffic to a viral article that matters.
+  2. Performance.Cache evicts on TTL only. Cachex enforces the 10K entry
+     limit. Without that bound, a burst of unique-slug requests grows the
+     cache unbounded for the 15-minute TTL window.
+
+  Retiring Cachex would also require migrating `Droodotfoo.Wiki.Storage`
+  (uses Cachex for the MinIO availability probe) and the supervisor entry
+  in `Droodotfoo.Application`. See the cache-consolidation discussion for
+  the cost breakdown.
   """
 
   @cache :wiki_cache
