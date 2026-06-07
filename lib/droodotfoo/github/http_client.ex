@@ -6,10 +6,14 @@ defmodule Droodotfoo.GitHub.HttpClient do
   require Logger
 
   alias Droodotfoo.ErrorSanitizer
+  alias Droodotfoo.HttpClient.Response
 
   @github_rest_api_url "https://api.github.com"
   @github_graphql_url "https://api.github.com/graphql"
   @max_retries 3
+
+  @status_map %{401 => :unauthorized, 403 => :rate_limited, 404 => :not_found}
+  @response_opts [status_map: @status_map, log_prefix: "GitHub API"]
 
   # Type definitions
 
@@ -68,38 +72,15 @@ defmodule Droodotfoo.GitHub.HttpClient do
   Handle HTTP response status codes uniformly.
   """
   @spec handle_response(http_response(), parser()) :: api_result()
-  def handle_response({:ok, %{status: 200, body: body}}, parser) when is_function(parser, 1) do
-    {:ok, parser.(body)}
-  end
-
-  def handle_response({:ok, %{status: 200, body: body}}, :raw) do
-    {:ok, body}
-  end
-
-  def handle_response({:ok, %{status: 401}}, _parser), do: {:error, :unauthorized}
-  def handle_response({:ok, %{status: 403}}, _parser), do: {:error, :rate_limited}
-  def handle_response({:ok, %{status: 404}}, _parser), do: {:error, :not_found}
-
-  def handle_response({:ok, %{status: status}}, _parser) do
-    Logger.error("GitHub API returned unexpected status: #{status}")
-    {:error, {:unexpected_status, status}}
-  end
-
-  def handle_response({:error, reason}, _parser) do
-    Logger.error("GitHub API request failed: #{ErrorSanitizer.sanitize(reason)}")
-    {:error, reason}
-  end
+  def handle_response(response, parser),
+    do: Response.handle(response, parser, @response_opts)
 
   @doc """
   Handle empty list response specifically.
   """
   @spec handle_list_response(http_response(), parser()) :: api_result()
-  def handle_list_response({:ok, %{status: 200, body: []}}, _parser), do: {:error, :empty}
-
-  def handle_list_response({:ok, %{status: 200, body: [first | _]}}, parser),
-    do: {:ok, parser.(first)}
-
-  def handle_list_response(response, _parser), do: handle_response(response, :raw)
+  def handle_list_response(response, parser),
+    do: Response.handle_list(response, parser, @response_opts)
 
   # Private
 
