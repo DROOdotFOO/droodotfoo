@@ -25,7 +25,11 @@ defmodule Droodotfoo.HttpClient.Response do
 
   @type response :: {:ok, %{status: integer(), body: term()}} | {:error, term()}
   @type parser :: (term() -> term()) | :raw
-  @type opts :: [status_map: %{integer() => atom()}, log_prefix: String.t()]
+  @type opts :: [
+          status_map: %{integer() => atom()},
+          log_prefix: String.t(),
+          unknown_status_tag: atom()
+        ]
   @type result :: {:ok, term()} | {:error, term()}
 
   @doc """
@@ -56,7 +60,7 @@ defmodule Droodotfoo.HttpClient.Response do
 
       :error ->
         Logger.error("#{log_prefix(opts)} returned unexpected status: #{status}")
-        {:error, {:unexpected_status, status}}
+        {:error, {unknown_status_tag(opts), status}}
     end
   end
 
@@ -83,4 +87,5 @@ defmodule Droodotfoo.HttpClient.Response do
 
   defp status_map(opts), do: Keyword.get(opts, :status_map, %{})
   defp log_prefix(opts), do: Keyword.get(opts, :log_prefix, "HTTP")
+  defp unknown_status_tag(opts), do: Keyword.get(opts, :unknown_status_tag, :http_error)
 end

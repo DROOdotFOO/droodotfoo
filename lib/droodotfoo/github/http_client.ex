@@ -13,7 +13,11 @@ defmodule Droodotfoo.GitHub.HttpClient do
   @max_retries 3
 
   @status_map %{401 => :unauthorized, 403 => :rate_limited, 404 => :not_found}
-  @response_opts [status_map: @status_map, log_prefix: "GitHub API"]
+  @response_opts [
+    status_map: @status_map,
+    log_prefix: "GitHub API",
+    unknown_status_tag: :unexpected_status
+  ]
 
   # Type definitions
 
