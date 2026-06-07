@@ -155,7 +155,7 @@ defmodule Droodotfoo.Wiki.Ingestion.OSRSPipeline do
          attrs = build_article_attrs(operation, page, slug, html_key, raw_key, content_hash),
          {:ok, article} <- Common.persist_article(operation, existing, attrs) do
       Droodotfoo.Wiki.Cache.invalidate(@source, slug)
-      log_operation(operation, page.title)
+      Common.log_operation(operation, "OSRS article", page.title)
       {Common.operation_result(operation), article}
     else
       {:error, changeset} -> {:error, {:"#{operation}_failed", changeset}}
@@ -192,8 +192,6 @@ defmodule Droodotfoo.Wiki.Ingestion.OSRSPipeline do
     }
   end
 
-  defp log_operation(:insert, title), do: Logger.info("Created OSRS article: #{title}")
-  defp log_operation(:update, title), do: Logger.info("Updated OSRS article: #{title}")
 
   defp maybe_store_raw(%{wikitext: nil}, _slug), do: {:ok, nil}
   defp maybe_store_raw(%{wikitext: ""}, _slug), do: {:ok, nil}

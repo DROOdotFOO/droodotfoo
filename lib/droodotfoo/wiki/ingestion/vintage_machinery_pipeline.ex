@@ -124,7 +124,7 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryPipeline do
          attrs = build_article_attrs(page, html_key, raw_key, content_hash),
          {:ok, article} <- Common.persist_article(operation, existing, attrs) do
       Cache.invalidate(@source, page.slug)
-      log_operation(operation, page.title)
+      Common.log_operation(operation, "VintageMachinery article", page.title)
       {Common.operation_result(operation), article}
     else
       {:error, changeset} -> {:error, {:"#{operation}_failed", changeset}}
@@ -148,11 +148,6 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryPipeline do
     }
   end
 
-  defp log_operation(:insert, title),
-    do: Logger.info("Created VintageMachinery article: #{title}")
-
-  defp log_operation(:update, title),
-    do: Logger.info("Updated VintageMachinery article: #{title}")
 
   @unwanted_selectors ~w(nav header footer .navigation .sidebar #menu script style noscript)
 

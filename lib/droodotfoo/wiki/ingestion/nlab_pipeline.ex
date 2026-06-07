@@ -116,7 +116,7 @@ defmodule Droodotfoo.Wiki.Ingestion.NLabPipeline do
          attrs = build_article_attrs(operation, page, html, html_key, raw_key, content_hash),
          {:ok, article} <- Common.persist_article(operation, existing, attrs) do
       Cache.invalidate(@source, page.slug)
-      log_operation(operation, page.title)
+      Common.log_operation(operation, "nLab article", page.title)
       {Common.operation_result(operation), article}
     else
       {:error, changeset} -> {:error, {:"#{operation}_failed", changeset}}
@@ -159,8 +159,6 @@ defmodule Droodotfoo.Wiki.Ingestion.NLabPipeline do
     }
   end
 
-  defp log_operation(:insert, title), do: Logger.info("Created nLab article: #{title}")
-  defp log_operation(:update, title), do: Logger.info("Updated nLab article: #{title}")
 
   defp render_page(page) do
     page.content

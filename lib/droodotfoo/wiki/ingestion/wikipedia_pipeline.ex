@@ -145,7 +145,7 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaPipeline do
          attrs = build_article_attrs(page, html_key, raw_key, content_hash),
          {:ok, article} <- Common.persist_article(operation, existing, attrs) do
       Cache.invalidate(@source, page.slug)
-      log_operation(operation, page.title)
+      Common.log_operation(operation, "Wikipedia article", page.title)
       {Common.operation_result(operation), article}
     else
       {:error, changeset} -> {:error, {:"#{operation}_failed", changeset}}
@@ -172,8 +172,6 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaPipeline do
     }
   end
 
-  defp log_operation(:insert, title), do: Logger.info("Created Wikipedia article: #{title}")
-  defp log_operation(:update, title), do: Logger.info("Updated Wikipedia article: #{title}")
 
   @unwanted_selectors ~w(script style .mw-editsection .navbox .sistersitebox .noprint #coordinates)
 
