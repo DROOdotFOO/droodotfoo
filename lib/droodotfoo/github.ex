@@ -27,6 +27,8 @@ defmodule Droodotfoo.GitHub do
   Returns the project unchanged if GitHub data cannot be fetched.
   """
   @spec enrich_project(Projects.t()) :: Projects.t()
+  def enrich_project(%Projects{private?: true} = project), do: project
+
   def enrich_project(%Projects{github_url: url} = project) when is_binary(url) do
     case Client.parse_github_url(url) do
       {:ok, {owner, repo}} ->

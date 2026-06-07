@@ -46,6 +46,31 @@ defmodule Droodotfoo.GitHubTest do
       result = GitHub.enrich_project(project)
       assert result == project
     end
+
+    test "skips the fetch for projects marked private?" do
+      # Hitting a real github URL would 404 (private repo). The private? guard
+      # short-circuits before parse_github_url is ever called.
+      project = %Projects{
+        id: "riddler",
+        name: "riddler",
+        tagline: "Cross-chain solver",
+        description: "Cross-chain solver",
+        tech_stack: [],
+        topics: [],
+        github_url: "https://github.com/axol-io/Riddler",
+        demo_url: nil,
+        live_demo: false,
+        status: :active,
+        highlights: [],
+        year: 2026,
+        github_data: nil,
+        private?: true
+      }
+
+      result = GitHub.enrich_project(project)
+      assert result == project
+      assert result.github_data == nil
+    end
   end
 
   describe "enrich_projects/1" do
