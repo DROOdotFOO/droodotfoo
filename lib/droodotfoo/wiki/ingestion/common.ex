@@ -108,7 +108,11 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
   @doc """
   Process multiple pages concurrently using Task.async_stream.
 
-  Returns a map of `%{key => result}`.
+  Returns a map of `%{key => result}`. Per-item timeouts are captured as
+  `{:error, {:timeout, _}}` rather than crashing the caller. The default
+  `Task.async_stream` behavior would propagate the timeout exit to the
+  linked parent; `on_timeout: :kill_task` swaps that for a graceful exit
+  tuple in the stream.
   """
   @spec process_pages_concurrent([any()], (any() -> any()), keyword()) :: %{any() => any()}
   def process_pages_concurrent(items, process_fn, opts \\ []) do
@@ -116,7 +120,11 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
     timeout = Keyword.get(opts, :timeout, 60_000)
 
     items
-    |> Task.async_stream(process_fn, max_concurrency: max_concurrency, timeout: timeout)
+    |> Task.async_stream(process_fn,
+      max_concurrency: max_concurrency,
+      timeout: timeout,
+      on_timeout: :kill_task
+    )
     |> Enum.zip(items)
     |> Enum.map(fn
       {{:ok, result}, key} -> {key, result}

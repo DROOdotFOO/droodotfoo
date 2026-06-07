@@ -248,8 +248,16 @@ defmodule Droodotfoo.Wiki.Ingestion.CommonTest do
       assert result == %{1 => 10, 2 => 20, 3 => 30}
     end
 
-    # Task.async_stream defaults to on_timeout: :exit which crashes the linked
-    # parent. The {:exit, reason} clause in process_pages_concurrent is dead
-    # code in the current configuration. Filed as a follow-up.
+    test "captures per-item timeouts as {:error, :timeout} rather than crashing the caller" do
+      result =
+        Common.process_pages_concurrent(
+          [:slow],
+          fn _ -> Process.sleep(200) end,
+          max_concurrency: 1,
+          timeout: 25
+        )
+
+      assert %{slow: {:error, :timeout}} = result
+    end
   end
 end
