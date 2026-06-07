@@ -4,14 +4,14 @@ defmodule DroodotfooWeb.ContributionHelpers do
   Handles PubSub subscription, async fetch, and grid computation.
   """
 
-  alias Droodotfoo.GitHub.Contributions
+  alias Droodotfoo.Activity
 
   defmacro __using__(_opts) do
     quote do
       @impl true
       def handle_info(:load_contributions, socket) do
         grid =
-          case Contributions.fetch_and_broadcast() do
+          case Activity.fetch_and_broadcast() do
             {:ok, data} -> DroodotfooWeb.GithubComponents.to_grid(data)
             {:error, _} -> nil
           end
@@ -39,7 +39,7 @@ defmodule DroodotfooWeb.ContributionHelpers do
 
   @doc "Subscribe and trigger async load. Call in mount when connected."
   def init_contributions do
-    Contributions.subscribe()
+    Activity.subscribe()
     send(self(), :load_contributions)
   end
 end

@@ -90,7 +90,7 @@ defmodule DroodotfooWeb.AboutLive do
           When something I depend on can be made faster or fixed, I send it upstream. Recent: ARM NEON
           optimizations in
           <.ext_link
-            href="https://git.ffmpeg.org/gitweb/ffmpeg.git/log/?qt=author&q=DROOdotFOO"
+            href="https://code.ffmpeg.org/DROOdotFOO?tab=activity"
             text="FFmpeg"
           />, a Charon health check fix in Dappnode's
           <.ext_link

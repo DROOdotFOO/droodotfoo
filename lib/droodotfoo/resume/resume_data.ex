@@ -359,13 +359,13 @@ defmodule Droodotfoo.Resume.ResumeData do
       upstream_contributions: [
         %{
           project: "FFmpeg",
-          title: "aarch64 NEON optimizations for swscale yuv2rgb",
+          title: "aarch64 NEON optimizations for swscale and libavfilter",
           description:
-            "ARM NEON assembly for YUV->RGB color space conversion and threshold filter. 19 commits merged to master.",
-          url: "https://git.ffmpeg.org/gitweb/ffmpeg.git/log/?qt=author&q=DROOdotFOO",
+            "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. libavfilter vf_threshold queued. 10 commits on master.",
+          url: "https://code.ffmpeg.org/DROOdotFOO?tab=activity",
           type: "merged",
-          date: "2026-05",
-          tags: ["C", "aarch64", "NEON", "SIMD", "swscale"]
+          date: "2026-06",
+          tags: ["C", "aarch64", "NEON", "SIMD", "swscale", "libavfilter"]
         },
         %{
           project: "Ethereum ERCs",

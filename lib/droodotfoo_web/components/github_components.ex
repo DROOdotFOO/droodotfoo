@@ -1,12 +1,12 @@
 defmodule DroodotfooWeb.GithubComponents do
   @moduledoc """
-  Components for GitHub data display.
-  Grid layout derived from flat contribution data at render time.
+  Components for the contribution-graph display.
+  Grid layout derived from flat activity data at render time.
   """
 
   use DroodotfooWeb, :html
 
-  alias Droodotfoo.GitHub.Contributions
+  alias Droodotfoo.Activity
 
   @month_abbr ~w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
   @day_labels ["", "Mon", "", "Wed", "", "Fri", ""]
@@ -19,7 +19,7 @@ defmodule DroodotfooWeb.GithubComponents do
     ~H"""
     <figure id={@id} phx-hook="ContributionGraphHook" aria-labelledby={"#{@id}-caption"}>
       <figcaption id={"#{@id}-caption"} class="sr-only">
-        GitHub contribution activity over the past year
+        Contribution activity over the past year, combined from GitHub and code.ffmpeg.org
       </figcaption>
       <.contrib_loading :if={@loading} />
       <div :if={!@loading && @grid}>
@@ -34,11 +34,11 @@ defmodule DroodotfooWeb.GithubComponents do
 
   # -- Grid presenter: flat days -> week grid with month labels and streak --
 
-  @doc "Transform flat contribution data into a grid structure for rendering."
-  def to_grid(%{days: days, total: total, source: source}) do
+  @doc "Transform flat activity data into a grid structure for rendering."
+  def to_grid(%{days: days, total: total, sources: sources}) do
     first_date = days |> hd() |> Map.get(:date) |> Date.from_iso8601!()
     padding = Date.day_of_week(first_date, :sunday) - 1
-    empty = Contributions.empty_day()
+    empty = Activity.empty_day()
 
     weeks =
       (List.duplicate(empty, padding) ++ days)
@@ -49,7 +49,7 @@ defmodule DroodotfooWeb.GithubComponents do
       month_labels: derive_month_labels(weeks),
       total: total,
       streak: calculate_streak(days),
-      source: source
+      sources: sources
     }
   end
 
@@ -159,7 +159,7 @@ defmodule DroodotfooWeb.GithubComponents do
           <strong class="contrib-accent">{@grid.streak}</strong> day streak
         </span>
       <% end %>
-      <%= if @grid.source == :rest do %>
+      <%= if :rest in @grid.sources do %>
         <span class="contrib-source">(partial -- REST API)</span>
       <% end %>
     </div>

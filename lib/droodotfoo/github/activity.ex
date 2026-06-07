@@ -1,22 +1,20 @@
-defmodule Droodotfoo.GitHub.Contributions do
+defmodule Droodotfoo.GitHub.Activity do
   @moduledoc """
-  Fetches GitHub contribution data.
-  GraphQL primary (full year with levels), REST Events fallback (recent activity).
-  Returns flat day lists -- grid layout is a view concern handled by GithubComponents.
+  Fetches GitHub contribution-calendar data for a user.
+
+  GraphQL primary (full year with levels), REST events fallback (recent activity).
+  Returns flat day lists. PubSub / broadcast lives in `Droodotfoo.Activity`,
+  which aggregates this with Forgejo activity.
   """
 
   require Logger
 
   alias Droodotfoo.GitHub.{Cache, HttpClient}
 
-  @topic "contributions"
-
   @username "DROOdotFOO"
   @cache_key {:contributions, @username}
   @cache_ttl :timer.hours(4)
   @rest_max_pages 10
-
-  @empty_day %{date: "", count: 0, level: 0, repos: [], activity_types: []}
 
   @type day :: %{
           date: String.t(),
@@ -26,41 +24,18 @@ defmodule Droodotfoo.GitHub.Contributions do
           activity_types: [String.t()]
         }
 
-  @type contribution_data :: %{
+  @type data :: %{
           days: [day()],
           total: non_neg_integer(),
           source: :graphql | :rest
         }
 
-  @spec empty_day() :: day()
-  def empty_day, do: @empty_day
-
-  @doc "Subscribe to contribution data updates via PubSub."
-  @spec subscribe() :: :ok | {:error, term()}
-  def subscribe, do: Phoenix.PubSub.subscribe(Droodotfoo.PubSub, @topic)
-
-  @spec fetch() :: {:ok, contribution_data()} | {:error, term()}
+  @spec fetch() :: {:ok, data()} | {:error, term()}
   def fetch do
     case Cache.get(@cache_key) do
       {:ok, data, _cached_at} -> {:ok, data}
       :miss -> fetch_and_cache()
     end
-  end
-
-  @doc "Fetch and broadcast to all subscribers."
-  @spec fetch_and_broadcast() :: {:ok, contribution_data()} | {:error, term()}
-  def fetch_and_broadcast do
-    result = fetch()
-
-    case result do
-      {:ok, data} ->
-        Phoenix.PubSub.broadcast(Droodotfoo.PubSub, @topic, {:contribution_data, data})
-
-      _ ->
-        :ok
-    end
-
-    result
   end
 
   defp fetch_and_cache do
@@ -255,7 +230,7 @@ defmodule Droodotfoo.GitHub.Contributions do
         %{
           date: date_str,
           count: info.count,
-          level: quantize_level(info.count, max_count),
+          level: Droodotfoo.Activity.quantize_level(info.count, max_count),
           repos: Enum.reject(info.repos, &is_nil/1),
           activity_types: Enum.reject(info.types, &is_nil/1)
         }
@@ -288,16 +263,4 @@ defmodule Droodotfoo.GitHub.Contributions do
 
   defp short_repo(nil), do: nil
   defp short_repo(name), do: name |> String.split("/") |> List.last()
-
-  defp quantize_level(0, _), do: 0
-  defp quantize_level(_, 0), do: 1
-
-  defp quantize_level(count, max) do
-    case count / max do
-      r when r <= 0.25 -> 1
-      r when r <= 0.50 -> 2
-      r when r <= 0.75 -> 3
-      _ -> 4
-    end
-  end
 end
