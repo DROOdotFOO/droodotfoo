@@ -11,7 +11,7 @@ defmodule DroodotfooWeb.Wiki.Admin.SyncLive do
 
   use Phoenix.LiveView, layout: false
 
-  alias DroodotfooWeb.Wiki.Layouts
+  alias DroodotfooWeb.Wiki.{Helpers, Layouts}
   alias Droodotfoo.Wiki.Ingestion.SyncRun
   alias Droodotfoo.Wiki.{Content, CrossLinks, Search}
 
@@ -357,7 +357,7 @@ defmodule DroodotfooWeb.Wiki.Admin.SyncLive do
       diff < 3600 -> "#{div(diff, 60)}m ago"
       diff < 86400 -> "#{div(diff, 3600)}h ago"
       diff < 604_800 -> "#{div(diff, 86400)}d ago"
-      true -> Calendar.strftime(datetime, "%Y-%m-%d")
+      true -> Helpers.format_date(datetime)
     end
   end
 

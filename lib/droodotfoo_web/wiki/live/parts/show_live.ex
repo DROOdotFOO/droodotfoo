@@ -5,7 +5,7 @@ defmodule DroodotfooWeb.Wiki.Parts.ShowLive do
 
   use Phoenix.LiveView, layout: false
 
-  alias DroodotfooWeb.Wiki.Layouts
+  alias DroodotfooWeb.Wiki.{Helpers, Layouts}
   alias Droodotfoo.Wiki.Parts
   alias Droodotfoo.Wiki.Parts.{Part, Vehicle}
 
@@ -165,7 +165,7 @@ defmodule DroodotfooWeb.Wiki.Parts.ShowLive do
             </div>
 
             <div class="text-xs text-zinc-600 font-mono">
-              Added: {Calendar.strftime(@part.inserted_at, "%Y-%m-%d")}
+              Added: {Helpers.format_date(@part.inserted_at)}
             </div>
           </aside>
         </div>

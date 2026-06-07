@@ -8,7 +8,7 @@ defmodule DroodotfooWeb.Wiki.Admin.PendingLive do
 
   use Phoenix.LiveView, layout: false
 
-  alias DroodotfooWeb.Wiki.Layouts
+  alias DroodotfooWeb.Wiki.{Helpers, Layouts}
   alias Droodotfoo.Wiki.Content
   alias Droodotfoo.Wiki.Cache
 
@@ -271,7 +271,7 @@ defmodule DroodotfooWeb.Wiki.Admin.PendingLive do
       diff < 60 -> "just now"
       diff < 3600 -> "#{div(diff, 60)}m ago"
       diff < 86400 -> "#{div(diff, 3600)}h ago"
-      true -> Calendar.strftime(datetime, "%Y-%m-%d")
+      true -> Helpers.format_date(datetime)
     end
   end
 end

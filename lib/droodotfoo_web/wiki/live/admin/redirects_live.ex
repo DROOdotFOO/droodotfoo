@@ -7,7 +7,7 @@ defmodule DroodotfooWeb.Wiki.Admin.RedirectsLive do
 
   use Phoenix.LiveView, layout: false
 
-  alias DroodotfooWeb.Wiki.Layouts
+  alias DroodotfooWeb.Wiki.{Helpers, Layouts}
   alias Droodotfoo.Wiki.Content
 
   @sources ~w(osrs nlab wikipedia vintage_machinery wikiart)a
@@ -125,7 +125,7 @@ defmodule DroodotfooWeb.Wiki.Admin.RedirectsLive do
             </td>
             <td class="py-2 pr-4 text-zinc-300">{redirect.from_slug}</td>
             <td class="py-2 pr-4 text-green-400">{redirect.to_slug}</td>
-            <td class="py-2 pr-4 text-zinc-500">{format_date(redirect.inserted_at)}</td>
+            <td class="py-2 pr-4 text-zinc-500">{Helpers.format_date(redirect.inserted_at)}</td>
             <td class="py-2 text-right">
               <button
                 phx-click="delete"
@@ -201,7 +201,4 @@ defmodule DroodotfooWeb.Wiki.Admin.RedirectsLive do
   defp source_label(:wikiart), do: "WikiArt"
   defp source_label(source), do: to_string(source)
 
-  defp format_date(datetime) do
-    Calendar.strftime(datetime, "%Y-%m-%d")
-  end
 end

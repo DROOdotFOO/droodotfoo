@@ -13,6 +13,7 @@ defmodule DroodotfooWeb.Wiki.SitemapController do
 
   import Ecto.Query
   alias Droodotfoo.Repo
+  alias DroodotfooWeb.Wiki.Helpers
   alias Droodotfoo.Wiki.Content.Article
 
   @base_url "https://wiki.droo.foo"
@@ -127,7 +128,7 @@ defmodule DroodotfooWeb.Wiki.SitemapController do
     |> Enum.map(fn %{slug: slug, synced_at: synced_at} ->
       %{
         loc: "#{@base_url}#{path}/#{slug}",
-        lastmod: format_date(synced_at),
+        lastmod: Helpers.format_date(synced_at),
         priority: "0.6",
         changefreq: "weekly"
       }
@@ -162,6 +163,4 @@ defmodule DroodotfooWeb.Wiki.SitemapController do
     """
   end
 
-  defp format_date(nil), do: nil
-  defp format_date(%DateTime{} = dt), do: Calendar.strftime(dt, "%Y-%m-%d")
 end
