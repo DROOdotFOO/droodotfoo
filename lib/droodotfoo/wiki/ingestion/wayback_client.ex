@@ -132,10 +132,16 @@ defmodule Droodotfoo.Wiki.Ingestion.WaybackClient do
 
   @doc false
   # Public for characterization tests. Internal helper otherwise.
-  def handle_response({:ok, %{status: 200, body: body}}), do: {:ok, body}
-  def handle_response({:ok, %{status: 404}}), do: {:error, :not_found}
-  def handle_response({:ok, %{status: status}}), do: {:error, {:http_error, status}}
+  # `:request_error` wrapper is preserved on transport errors; delegating
+  # only the success/status-map path keeps the public contract intact.
   def handle_response({:error, reason}), do: {:error, {:request_error, reason}}
+
+  def handle_response({:ok, _} = response) do
+    Droodotfoo.HttpClient.Response.handle(response, :raw,
+      status_map: %{404 => :not_found},
+      log_prefix: "Wayback Machine"
+    )
+  end
 
   @doc """
   Fetch snapshot with metadata (timestamp, original URL).
