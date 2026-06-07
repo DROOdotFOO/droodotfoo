@@ -174,12 +174,14 @@ defmodule DroodotfooWeb.Wiki.Helpers do
 
   # --- Date Formatting ---
 
-  @doc "Format datetime as YYYY-MM-DD."
-  @spec format_date(DateTime.t() | NaiveDateTime.t()) :: String.t()
+  @doc "Format datetime as YYYY-MM-DD. Returns nil if input is nil."
+  @spec format_date(DateTime.t() | NaiveDateTime.t() | nil) :: String.t() | nil
+  def format_date(nil), do: nil
   def format_date(datetime), do: Calendar.strftime(datetime, "%Y-%m-%d")
 
-  @doc "Format datetime as YYYY-MM-DD HH:MM."
-  @spec format_datetime(DateTime.t() | NaiveDateTime.t()) :: String.t()
+  @doc "Format datetime as YYYY-MM-DD HH:MM. Returns nil if input is nil."
+  @spec format_datetime(DateTime.t() | NaiveDateTime.t() | nil) :: String.t() | nil
+  def format_datetime(nil), do: nil
   def format_datetime(datetime), do: Calendar.strftime(datetime, "%Y-%m-%d %H:%M")
 
   # --- Changeset Errors ---
