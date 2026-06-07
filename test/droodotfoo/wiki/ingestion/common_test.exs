@@ -79,4 +79,28 @@ defmodule Droodotfoo.Wiki.Ingestion.CommonTest do
       assert :ok = Common.log_operation(:insert, "VintageMachinery (Wayback)", "Drill press")
     end
   end
+
+  describe "module_config/2" do
+    defmodule FakeClient do
+    end
+
+    setup do
+      Application.put_env(:droodotfoo, FakeClient, base_url: "https://x", rate_limit_ms: 250)
+      on_exit(fn -> Application.delete_env(:droodotfoo, FakeClient) end)
+    end
+
+    test "returns the configured value for a known key" do
+      assert Common.module_config(FakeClient, :base_url) == "https://x"
+      assert Common.module_config(FakeClient, :rate_limit_ms) == 250
+    end
+
+    test "returns nil for an unconfigured key under a configured module" do
+      assert Common.module_config(FakeClient, :missing_key) == nil
+    end
+
+    test "returns nil for an unconfigured module" do
+      assert Common.module_config(Droodotfoo.Wiki.Ingestion.CommonTest.NotARealModule, :anything) ==
+               nil
+    end
+  end
 end

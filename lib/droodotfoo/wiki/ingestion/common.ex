@@ -245,6 +245,27 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
   end
 
   @doc """
+  Read a per-module config key from the `:droodotfoo` app environment.
+
+  Each wiki client is configured under its own module name, e.g.
+
+      config :droodotfoo, Droodotfoo.Wiki.Ingestion.WikipediaClient,
+        base_url: "https://en.wikipedia.org/api/rest_v1",
+        rate_limit_ms: 1_000
+
+  Callers typically wrap this so they can write `config(:base_url)`:
+
+      defp config(key), do: Common.module_config(__MODULE__, key)
+
+  Returns `nil` if the key (or module config) is not set.
+  """
+  @spec module_config(module(), atom()) :: any()
+  def module_config(module, key) do
+    Application.get_env(:droodotfoo, module, [])
+    |> Keyword.get(key)
+  end
+
+  @doc """
   Persist an article to the database (insert or update).
 
   ## Examples
