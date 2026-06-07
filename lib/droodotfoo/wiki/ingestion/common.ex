@@ -180,6 +180,51 @@ defmodule Droodotfoo.Wiki.Ingestion.Common do
   end
 
   @doc """
+  Rewrites `href` on `<a>` and `src` on `<img>` by applying the given
+  transforms to the existing values.
+
+  Non-binary attribute values and other tags pass through unchanged. Each
+  transform receives the existing attribute value and returns the new one.
+
+  ## Example
+
+      Common.rewrite_links(doc,
+        fn
+          "./wiki/" <> slug -> "/wikipedia/" <> slug
+          other -> other
+        end,
+        fn
+          "//" <> rest -> "https://" <> rest
+          other -> other
+        end
+      )
+
+  """
+  @type link_transform :: (String.t() -> String.t())
+  @spec rewrite_links(Floki.html_tree(), link_transform(), link_transform()) ::
+          Floki.html_tree()
+  def rewrite_links(doc, href_fn, src_fn)
+      when is_function(href_fn, 1) and is_function(src_fn, 1) do
+    Floki.traverse_and_update(doc, fn
+      {"a", attrs, children} ->
+        {"a", rewrite_attr(attrs, "href", href_fn), children}
+
+      {"img", attrs, children} ->
+        {"img", rewrite_attr(attrs, "src", src_fn), children}
+
+      other ->
+        other
+    end)
+  end
+
+  defp rewrite_attr(attrs, key, transform) do
+    Enum.map(attrs, fn
+      {^key, val} when is_binary(val) -> {key, transform.(val)}
+      other -> other
+    end)
+  end
+
+  @doc """
   Persist an article to the database (insert or update).
 
   ## Examples
