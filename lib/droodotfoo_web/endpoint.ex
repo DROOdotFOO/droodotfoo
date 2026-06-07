@@ -74,9 +74,9 @@ defmodule DroodotfooWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
-  # Log slow requests (> 500ms)
+  # Log slow requests (> 1s; cold-start /about runs ~650ms so 500ms was noisy)
   plug DroodotfooWeb.Plugs.RequestLogger,
-    slow_threshold_ms: 500,
+    slow_threshold_ms: 1000,
     exclude_paths: ["/health", "/dev"]
 
   # Global IP rate limiting (200 req/min per IP)
