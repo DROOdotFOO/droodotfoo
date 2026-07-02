@@ -12,7 +12,10 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
 config :droodotfoo,
   ecto_repos: [Droodotfoo.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  # Date of the current release, shown as "Updated" in the site header.
+  # Bump this together with the version in mix.exs on each push.
+  released_on: ~D[2026-07-02]
 
 # Cachex - in-memory cache with TTL for wiki
 config :droodotfoo, :wiki_cache,

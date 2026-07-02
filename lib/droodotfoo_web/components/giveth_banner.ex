@@ -26,9 +26,9 @@ defmodule DroodotfooWeb.GivethBanner do
         target="_blank"
         rel="noopener noreferrer"
       >
-        <span class="giveth-banner-tag">QF Round</span>
+        <span class="giveth-banner-tag">Support</span>
         <span class="giveth-banner-text">
-          <span class="giveth-banner-multiplier">$5 to get matched</span>
+          <span class="giveth-banner-multiplier">Unconditional Human Privacy</span>
           <span aria-hidden="true">&middot;</span> Back axol.io on Giveth
         </span>
         <span class="giveth-banner-arrow" aria-hidden="true">&rarr;</span>

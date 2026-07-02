@@ -10,25 +10,11 @@ defmodule DroodotfooWeb.NowLiveTest do
       assert html =~ "Last updated"
     end
 
-    test "shows the Recently shipped section with upstream contributions", %{conn: conn} do
+    test "no longer shows the Recently shipped section", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/now")
 
-      assert html =~ "Recently shipped"
-      assert html =~ "Upstream work merged into other projects"
-      assert html =~ "contribution-type"
-    end
-
-    test "surfaces the FFmpeg and ERC-8262 wins", %{conn: conn} do
-      {:ok, _view, html} = live(conn, ~p"/now")
-
-      assert html =~ "FFmpeg"
-      assert html =~ "ERC-8262"
-    end
-
-    test "links to the full projects list from the contributions section", %{conn: conn} do
-      {:ok, _view, html} = live(conn, ~p"/now")
-
-      assert html =~ ~r/<a[^>]*href="\/projects"/
+      refute html =~ "Recently shipped"
+      refute html =~ "Upstream work merged into other projects"
     end
 
     test "no longer includes the deprecated 'Other FOSS' paragraph", %{conn: conn} do

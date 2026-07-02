@@ -15,15 +15,22 @@ defmodule DroodotfooWeb.ProjectsLiveTest do
       assert html =~ "Upstream contributions"
       assert html =~ "Maintained projects"
       assert html =~ "Work merged into other projects"
-      assert html =~ "Open source I author and maintain"
+      assert html =~ "Open source I work on"
     end
 
     test "renders every known upstream contribution", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/projects")
 
-      for project <- ["FFmpeg", "Ethereum ERCs", "Dappnode", "Zed"] do
+      for project <- ["Ethereum ERCs", "Dappnode", "Zed"] do
         assert html =~ project, "expected #{project} in /projects HTML"
       end
+    end
+
+    test "lists FFmpeg and aztec-noir as maintained projects", %{conn: conn} do
+      {:ok, _view, html} = live(conn, ~p"/projects")
+
+      assert html =~ "FFmpeg"
+      assert html =~ "aztec-noir"
     end
 
     test "renders contribution-type badges with bracket pseudo-elements available", %{conn: conn} do

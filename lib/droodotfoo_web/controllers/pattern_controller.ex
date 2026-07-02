@@ -88,6 +88,7 @@ defmodule DroodotfooWeb.PatternController do
   defp parse_style("composite"), do: :composite
   defp parse_style("glass_cube"), do: :glass_cube
   defp parse_style("cockpit_hud"), do: :cockpit_hud
+  defp parse_style("clean_air"), do: :clean_air
   defp parse_style(_), do: nil
 
   # Parse integer with fallback

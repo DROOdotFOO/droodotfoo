@@ -44,7 +44,9 @@ defmodule DroodotfooWeb.ContentComponents do
   Uses table layout inspired by the-monospace-web.
   """
   def site_header(assigns) do
-    assigns = assign(assigns, :today, Date.utc_today() |> Date.to_string())
+    assigns =
+      assign(assigns, :updated_on, Droodotfoo.Core.Config.released_on() |> Date.to_string())
+
     assigns = assign(assigns, :version, Application.spec(:droodotfoo, :vsn) |> to_string())
 
     ~H"""
@@ -67,7 +69,7 @@ defmodule DroodotfooWeb.ContentComponents do
           <td class="header-subtitle" colspan="2">Engineer building his Gundam</td>
           <td class="header-meta-label">Updated</td>
           <td class="header-meta-value header-meta-value-right">
-            <time datetime={@today}>{@today}</time>
+            <time datetime={@updated_on}>{@updated_on}</time>
           </td>
         </tr>
         <tr>

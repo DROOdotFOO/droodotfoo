@@ -2,17 +2,20 @@ defmodule Mix.Tasks.FfmpegActivity.Refresh do
   @moduledoc """
   Regenerate `priv/ffmpeg_activity.json` from a local FFmpeg clone.
 
-  Reads commit dates from `git log --all --author <author>` and writes a
+  Reads commit dates from `git log <ref> --author <author>` and writes a
   list of `%{"date" => "YYYY-MM-DD", "count" => n}` entries covering the
-  past 365 days. `Droodotfoo.Forgejo.Activity` reads this at runtime and
-  the top-level aggregator merges it with GitHub activity.
+  past 365 days. Counts only commits reachable from `<ref>` (default
+  `origin/master`), so rebase iterations and backup branches do not inflate
+  the graph. `Droodotfoo.Forgejo.Activity` reads this at runtime and the
+  top-level aggregator merges it with GitHub activity.
 
-  Run manually whenever you push commits to FFmpeg:
+  Fetch upstream first so the ref is current, then run:
 
+      git -C ../ffmpeg fetch --no-tags origin master
       mix ffmpeg_activity.refresh
-      mix ffmpeg_activity.refresh --repo /path/to/ffmpeg --author DROOdotFOO
+      mix ffmpeg_activity.refresh --repo /path/to/ffmpeg --author DROOdotFOO --ref origin/master
 
-  Defaults: repo at `../ffmpeg` relative to this app, author `DROOdotFOO`.
+  Defaults: repo at `../ffmpeg`, author `DROOdotFOO`, ref `origin/master`.
   """
 
   use Mix.Task
@@ -21,24 +24,26 @@ defmodule Mix.Tasks.FfmpegActivity.Refresh do
 
   @default_repo "../ffmpeg"
   @default_author "DROOdotFOO"
+  @default_ref "origin/master"
 
   @impl Mix.Task
   def run(argv) do
     {opts, _, _} =
       OptionParser.parse(argv,
-        strict: [repo: :string, author: :string, output: :string]
+        strict: [repo: :string, author: :string, ref: :string, output: :string]
       )
 
     repo = Keyword.get(opts, :repo, @default_repo) |> Path.expand()
     author = Keyword.get(opts, :author, @default_author)
+    ref = Keyword.get(opts, :ref, @default_ref)
     output = Keyword.get(opts, :output, default_output())
 
     unless File.dir?(Path.join(repo, ".git")) do
       Mix.raise("Not a git repo: #{repo}")
     end
 
-    Mix.shell().info("Reading #{author}'s commits from #{repo}")
-    counts = commit_counts_by_date(repo, author)
+    Mix.shell().info("Reading #{author}'s commits merged into #{ref} from #{repo}")
+    counts = commit_counts_by_date(repo, author, ref)
 
     if map_size(counts) == 0 do
       Mix.shell().info("No commits found for author #{inspect(author)}")
@@ -55,7 +60,7 @@ defmodule Mix.Tasks.FfmpegActivity.Refresh do
     Mix.shell().info("Wrote #{length(entries)} active days to #{output}")
   end
 
-  defp commit_counts_by_date(repo, author) do
+  defp commit_counts_by_date(repo, author, ref) do
     {output, 0} =
       System.cmd(
         "git",
@@ -63,7 +68,7 @@ defmodule Mix.Tasks.FfmpegActivity.Refresh do
           "-C",
           repo,
           "log",
-          "--all",
+          ref,
           "--author=#{author}",
           "--since=1 year ago",
           "--format=%ad",

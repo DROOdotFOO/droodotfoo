@@ -14,17 +14,18 @@ defmodule DroodotfooWeb.NowLive do
   @impl true
   def mount(_params, _session, socket) do
     resume = ResumeData.get_resume_data()
-    last_updated = ~D[2026-04-25]
+    last_updated = Droodotfoo.Core.Config.released_on()
 
     if connected?(socket), do: DroodotfooWeb.ContributionHelpers.init_contributions()
 
-    socket
-    |> assign(:resume, resume)
-    |> assign(:last_updated, last_updated)
-    |> assign(:recent_contributions, Droodotfoo.Contributions.recent(3))
-    |> assign_page_meta("Now", "/now", breadcrumb_json_ld("Now", "/now"))
-    |> assign(DroodotfooWeb.ContributionHelpers.contribution_assigns())
-    |> then(&{:ok, &1})
+    socket =
+      socket
+      |> assign(:resume, resume)
+      |> assign(:last_updated, last_updated)
+      |> assign_page_meta("Now", "/now", breadcrumb_json_ld("Now", "/now"))
+      |> assign(DroodotfooWeb.ContributionHelpers.contribution_assigns())
+
+    {:ok, socket}
   end
 
   @impl true
@@ -48,15 +49,6 @@ defmodule DroodotfooWeb.NowLive do
           <strong>Last updated:</strong>
           {Date.to_string(@last_updated)}
         </div>
-
-        <h2 class="section-title">Recently shipped</h2>
-        <p class="text-muted">Upstream work merged into other projects.</p>
-        <.upstream_contributions contributions={@recent_contributions} />
-        <p class="text-muted">
-          Full list: <.link navigate={~p"/projects"}>projects</.link>.
-        </p>
-
-        <hr />
 
         <h2 class="section-title">Running</h2>
         <p>
@@ -103,12 +95,14 @@ defmodule DroodotfooWeb.NowLive do
         <article class="experience-item">
           <div class="experience-header">
             <div class="experience-title">Raxol</div>
-            <div class="experience-company">In progress</div>
+            <div class="experience-company">Live on Virtuals</div>
           </div>
 
           <p class="experience-description">
-            Terminal framework that grew payment rails. Agents can
-            hold wallets and settle trades via x402/MPP.
+            OTP-native agent runtime. A Raxol agent is live on
+            <.ext_link href="https://app.virtuals.io" text="Virtuals" />: it owns its
+            wallet, moves under a signed mandate, and settles privately through Xochi,
+            the agentic dark pool.
           </p>
 
           <.tech_tags technologies={["Elixir", "OTP", "x402"]} />
@@ -153,11 +147,11 @@ defmodule DroodotfooWeb.NowLive do
           {@resume.personal_info.location} ({@resume.personal_info.timezone}). Remote.
         </p>
 
-        <%= if @resume.availability == "open_to_consulting" do %>
-          <p class="mt-1 text-muted">
-            Open to consulting. Ethereum protocol, ZK circuits, validator infra. <.link navigate={~p"/about"}>Background</.link>.
-          </p>
-        <% end %>
+        <p :if={@resume.availability == "open_to_consulting"} class="mt-1 text-muted">
+          Open to consulting. Ethereum protocol, ZK circuits, validator infra. <.link navigate={
+            ~p"/about"
+          }>Background</.link>.
+        </p>
 
         <hr />
 

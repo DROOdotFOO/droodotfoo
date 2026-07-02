@@ -145,7 +145,7 @@ defmodule Droodotfoo.Resume.ResumeData do
     %__MODULE__{
       personal_info: %{
         name: "DROO AMOR",
-        title: "Blockchain Infrastructure Engineer",
+        title: "Engineer",
         location: "Remote",
         timezone: "Europe/Madrid",
         website: "https://droo.foo",
@@ -192,7 +192,7 @@ defmodule Droodotfoo.Resume.ResumeData do
           description:
             "Open-source blockchain infrastructure company supporting xochi.fi. Building production-grade FOSS tooling for staking, Ethereum clients, and terminal frameworks.",
           achievements: [
-            "Founded axol.io, developing mana Ethereum client and raxol terminal UI framework as production-grade FOSS tools",
+            "Founded axol.io, developing mana Ethereum client and raxol framework as production-grade FOSS tools",
             "Built and maintain open-source blockchain infrastructure community with active contributor base"
           ],
           technologies: %{
@@ -361,7 +361,7 @@ defmodule Droodotfoo.Resume.ResumeData do
           project: "FFmpeg",
           title: "aarch64 NEON optimizations for swscale and libavfilter",
           description:
-            "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. libavfilter vf_threshold queued. 10 commits on master.",
+            "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit LE and BE packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. 12 commits across four merged pull requests. First libavfilter aarch64 patch (vf_threshold) in review.",
           url: "https://code.ffmpeg.org/DROOdotFOO?tab=activity",
           type: "merged",
           date: "2026-06",

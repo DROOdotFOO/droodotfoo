@@ -36,12 +36,12 @@ defmodule DroodotfooWeb.Wiki.Layouts do
   def app(assigns) do
     assigns =
       assigns
-      |> assign(:today, Date.utc_today() |> Date.to_string())
+      |> assign(:updated_on, Droodotfoo.Core.Config.released_on() |> Date.to_string())
       |> assign(:version, Application.spec(:droodotfoo, :vsn) |> to_string())
 
     ~H"""
     <div class="page-container">
-      <.site_header today={@today} version={@version} />
+      <.site_header updated_on={@updated_on} version={@version} />
 
       <.site_nav current_path={@current_path} />
 
@@ -58,7 +58,7 @@ defmodule DroodotfooWeb.Wiki.Layouts do
   @doc """
   Site header with table layout matching droo.foo.
   """
-  attr :today, :string, required: true
+  attr :updated_on, :string, required: true
   attr :version, :string, required: true
 
   def site_header(assigns) do
@@ -78,7 +78,7 @@ defmodule DroodotfooWeb.Wiki.Layouts do
           <td class="header-subtitle" colspan="2">Federated wiki mirror</td>
           <td class="header-meta-label">Updated</td>
           <td class="header-meta-value header-meta-value-right">
-            <time datetime={@today}>{@today}</time>
+            <time datetime={@updated_on}>{@updated_on}</time>
           </td>
         </tr>
         <tr>

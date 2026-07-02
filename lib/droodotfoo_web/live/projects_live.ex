@@ -79,7 +79,7 @@ defmodule DroodotfooWeb.ProjectsLive do
 
       <section class="projects-section">
         <h2 class="section-title">Maintained projects</h2>
-        <p class="text-muted">Open source I author and maintain.</p>
+        <p class="text-muted">Open source I work on.</p>
         <div class="projects-grid">
           <%= for project <- @projects do %>
             <.project_card project={project} />

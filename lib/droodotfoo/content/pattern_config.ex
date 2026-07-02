@@ -300,6 +300,16 @@ defmodule Droodotfoo.Content.PatternConfig do
   end
 
   @doc """
+  Returns configuration for clean air (regatta wind field) pattern.
+  """
+  @spec clean_air_config :: pattern_config
+  def clean_air_config do
+    %{
+      fleet_count: %{min: 5, max: 7}
+    }
+  end
+
+  @doc """
   Returns default SVG dimensions.
   """
   @spec default_dimensions :: %{width: pos_integer, height: pos_integer}
@@ -333,7 +343,8 @@ defmodule Droodotfoo.Content.PatternConfig do
       :aurora,
       :composite,
       :glass_cube,
-      :cockpit_hud
+      :cockpit_hud,
+      :clean_air
     ]
   end
 
@@ -360,6 +371,7 @@ defmodule Droodotfoo.Content.PatternConfig do
   def get_config(:aurora), do: {:ok, aurora_config()}
   def get_config(:composite), do: {:ok, composite_config()}
   def get_config(:glass_cube), do: {:ok, glass_cube_config()}
+  def get_config(:clean_air), do: {:ok, clean_air_config()}
   def get_config(_), do: {:error, :unknown_style}
 
   @doc """

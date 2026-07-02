@@ -201,15 +201,6 @@
   ],
   "upstream_contributions": [
     {
-      "project": "FFmpeg",
-      "title": "aarch64 NEON optimizations for swscale and libavfilter",
-      "description": "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. libavfilter vf_threshold queued. 10 commits on master.",
-      "url": "https://code.ffmpeg.org/DROOdotFOO?tab=activity",
-      "type": "merged",
-      "date": "2026-06",
-      "tags": ["C", "aarch64", "NEON", "SIMD", "swscale", "libavfilter"]
-    },
-    {
       "project": "Ethereum ERCs",
       "title": "ERC-8262: Zero-Knowledge Compliance Oracle (co-author)",
       "description": "Six proof types in Noir circuits with multi-jurisdiction policy framework. Draft status on the Ethereum standards track.",
@@ -235,15 +226,6 @@
       "type": "docs",
       "date": "2024-08",
       "tags": ["docs", "Dappnode"]
-    },
-    {
-      "project": "Zed",
-      "title": "aztec-noir language extension",
-      "description": "Noir LSP and tree-sitter syntax for Aztec contracts, published to the Zed marketplace.",
-      "url": "https://github.com/zed-industries/extensions/tree/main/extensions/aztec-noir",
-      "type": "extension",
-      "date": "2026-05",
-      "tags": ["Zed", "Noir", "Aztec"]
     },
     {
       "project": "Zed",
@@ -304,6 +286,28 @@
           "Declarative markup with real-time Phoenix LiveView integration",
           "ANSI, Sixel, and Kitty graphics protocol support",
           "Character-perfect grid alignment for monospace displays"
+        ]
+      },
+      {
+        "name": "FFmpeg",
+        "url": "https://github.com/DROOdotFOO/FFmpeg",
+        "description": "aarch64 NEON assembly for swscale and libavfilter (active upstream contributor)",
+        "language": "C",
+        "status": "active",
+        "highlights": [
+          "NEON YUV->RGB paths for swscale: 16-bit LE/BE packed and the 2-line row-pair series",
+          "12 commits across four merged PRs; first libavfilter aarch64 patch (vf_threshold) in review"
+        ]
+      },
+      {
+        "name": "aztec-noir",
+        "url": "https://github.com/DROOdotFOO/aztec-noir",
+        "description": "Noir LSP and tree-sitter syntax for Aztec contracts, published to the Zed marketplace",
+        "language": "Rust",
+        "status": "active",
+        "highlights": [
+          "Noir language server and syntax highlighting for Aztec contract development",
+          "Published to the Zed extension marketplace"
         ]
       },
       {

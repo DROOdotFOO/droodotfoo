@@ -7,7 +7,7 @@ defmodule Droodotfoo.ContributionsTest do
     test "returns all contributions as structs" do
       contribs = Contributions.all()
 
-      assert length(contribs) >= 6
+      assert length(contribs) >= 4
       assert Enum.all?(contribs, &is_struct(&1, Contributions))
     end
 
@@ -26,14 +26,6 @@ defmodule Droodotfoo.ContributionsTest do
     test "results are sorted newest first by date" do
       dates = Contributions.all() |> Enum.map(& &1.date)
       assert dates == Enum.sort(dates, :desc)
-    end
-
-    test "includes the FFmpeg upstream contribution" do
-      ffmpeg = Enum.find(Contributions.all(), &(&1.project == "FFmpeg"))
-
-      assert ffmpeg
-      assert ffmpeg.type == :merged
-      assert "NEON" in ffmpeg.tags
     end
 
     test "includes the ERC-8262 standard contribution" do

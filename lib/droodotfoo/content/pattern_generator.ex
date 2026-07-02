@@ -28,6 +28,7 @@ defmodule Droodotfoo.Content.PatternGenerator do
           | :voronoi
           | :isometric
           | :composite
+          | :clean_air
   @type animation_mode :: :none | :css | :smil
   @type generate_opts :: [
           width: pos_integer(),
@@ -159,6 +160,7 @@ defmodule Droodotfoo.Content.PatternGenerator do
       :composite -> Patterns.Composite.generate_svg(slug, width, height, animate, tags)
       :glass_cube -> Patterns.GlassCube.generate_svg(slug, width, height, animate, tags)
       :cockpit_hud -> Patterns.CockpitHud.generate_svg(slug, width, height, animate, tags)
+      :clean_air -> Patterns.CleanAir.generate_svg(slug, width, height, animate, tags)
       _ -> Patterns.Waves.generate_svg(slug, width, height, animate, tags)
     end
   end
@@ -271,6 +273,7 @@ defmodule Droodotfoo.Content.PatternGenerator do
       :composite -> Patterns.Composite.generate(width, height, rng, palette, false)
       :glass_cube -> Patterns.GlassCube.generate(width, height, rng, palette, false)
       :cockpit_hud -> Patterns.CockpitHud.generate(width, height, rng, palette, false)
+      :clean_air -> Patterns.CleanAir.generate(width, height, rng, palette, false)
       _ -> Patterns.Waves.generate(width, height, rng, palette, false)
     end
   end

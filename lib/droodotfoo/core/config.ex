@@ -15,6 +15,13 @@ defmodule Droodotfoo.Core.Config do
   def app_version, do: Application.get_env(:droodotfoo, :app_version, "1.0.0")
 
   @doc """
+  Gets the release date, shown as "Updated" in the site header.
+  Set in config and bumped alongside the version on each release, so it
+  reflects the last push rather than the current wall-clock date.
+  """
+  def released_on, do: Application.get_env(:droodotfoo, :released_on, ~D[1970-01-01])
+
+  @doc """
   Gets the environment (dev, test, prod).
   Falls back to :prod if not configured (safe default for releases).
   """
