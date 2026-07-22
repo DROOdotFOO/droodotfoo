@@ -470,7 +470,10 @@ article blockquote strong {
   }
 
   .site-header {
+    /* Drop the display:table wrapper so the inner table can shrink to content */
+    display: block;
     margin-bottom: 0.5rem;
+    width: fit-content;
     max-width: calc(100vw - 2rem);
   }
 
