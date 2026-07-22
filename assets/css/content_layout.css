@@ -476,6 +476,9 @@ article blockquote strong {
 
   .header-table {
     table-layout: auto;
+    /* Shrink the box to its content instead of stretching to the viewport */
+    width: fit-content;
+    max-width: 100%;
   }
 
   .header-meta-label {
