@@ -249,4 +249,53 @@ defmodule Droodotfoo.Content.PostsTest do
       assert Posts.social_image_alt(post) == "Visual pattern for: Another Post"
     end
   end
+
+  describe "read_time calculation" do
+    test "counts words in every section of a post that uses horizontal rules" do
+      # Three 200-word sections separated by `---` rules. The rules must not be
+      # mistaken for frontmatter delimiters, which would drop the middle section.
+      body = Enum.join([words(200), "---", words(200), "---", words(200)], "\n\n")
+
+      {:ok, post} =
+        Posts.save_post(body, %{
+          "slug" => "test-read-time-rules",
+          "title" => "Rules",
+          "date" => "2025-01-01",
+          "description" => "",
+          "tags" => []
+        })
+
+      assert post.read_time == 3
+    end
+
+    test "counts words in a post with no horizontal rules" do
+      {:ok, post} =
+        Posts.save_post(words(600), %{
+          "slug" => "test-read-time-plain",
+          "title" => "Plain",
+          "date" => "2025-01-01",
+          "description" => "",
+          "tags" => []
+        })
+
+      assert post.read_time == 3
+    end
+
+    test "excludes fenced code blocks from the word count" do
+      body = words(400) <> "\n\n```elixir\n" <> words(600) <> "\n```\n"
+
+      {:ok, post} =
+        Posts.save_post(body, %{
+          "slug" => "test-read-time-code",
+          "title" => "Code",
+          "date" => "2025-01-01",
+          "description" => "",
+          "tags" => []
+        })
+
+      assert post.read_time == 2
+    end
+  end
+
+  defp words(n), do: Enum.map_join(1..n, " ", &"word#{&1}")
 end

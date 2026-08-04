@@ -20,6 +20,10 @@ defmodule Droodotfoo.SentryFilter do
         Logger.debug("Sentry filter: dropped infrastructure error")
         nil
 
+      client_disconnect?(event) ->
+        Logger.debug("Sentry filter: dropped client disconnect")
+        nil
+
       ignored_exception?(event) ->
         nil
 
@@ -108,4 +112,16 @@ defmodule Droodotfoo.SentryFilter do
   end
 
   defp infrastructure_error?(_), do: false
+
+  # Clients that vanish mid-request (navigation, network drop, proxy timeout).
+  # Bandit raises TransportError because the failure cannot be signalled back
+  # over a dead socket. Most common on the LiveView longpoll fallback, where
+  # the request body read is interrupted by the client going away.
+  defp client_disconnect?(%{exception: exceptions}) when is_list(exceptions) do
+    Enum.any?(exceptions, fn ex ->
+      Map.get(ex, :type, "") == "Bandit.TransportError"
+    end)
+  end
+
+  defp client_disconnect?(_), do: false
 end

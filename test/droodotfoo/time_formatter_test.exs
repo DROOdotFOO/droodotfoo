@@ -72,56 +72,53 @@ defmodule Droodotfoo.TimeFormatterTest do
     end
   end
 
-  describe "format_datetime_relative/1" do
-    test "formats DateTime to relative time" do
-      now = DateTime.utc_now()
+  describe "format_datetime_relative/2" do
+    test "formats DateTime to relative time against a fixed reference" do
+      now = ~U[2025-06-15 12:00:00Z]
+      ago = &DateTime.add(now, -&1, :second)
 
-      # 30 seconds ago
-      dt_30s = DateTime.add(now, -30, :second)
-      assert TimeFormatter.format_datetime_relative(dt_30s) == "30s ago"
+      assert TimeFormatter.format_datetime_relative(ago.(30), now) == "30s ago"
+      assert TimeFormatter.format_datetime_relative(ago.(300), now) == "5m ago"
+      assert TimeFormatter.format_datetime_relative(ago.(7200), now) == "2h ago"
+      assert TimeFormatter.format_datetime_relative(ago.(259_200), now) == "3d ago"
+    end
 
-      # 5 minutes ago
-      dt_5m = DateTime.add(now, -300, :second)
-      assert TimeFormatter.format_datetime_relative(dt_5m) == "5m ago"
+    test "defaults the reference to the current time" do
+      # Wide enough bucket that clock drift during the call cannot change it.
+      two_hours_ago = DateTime.add(DateTime.utc_now(), -7200, :second)
 
-      # 2 hours ago
-      dt_2h = DateTime.add(now, -7200, :second)
-      assert TimeFormatter.format_datetime_relative(dt_2h) == "2h ago"
-
-      # 3 days ago
-      dt_3d = DateTime.add(now, -259_200, :second)
-      assert TimeFormatter.format_datetime_relative(dt_3d) == "3d ago"
+      assert TimeFormatter.format_datetime_relative(two_hours_ago) == "2h ago"
     end
   end
 
-  describe "format_timestamp_ago/1" do
-    test "formats recent timestamps" do
-      now = System.system_time(:millisecond)
+  describe "format_timestamp_ago/2" do
+    # Fixed reference so the assertions never straddle a bucket boundary.
+    @now 1_750_000_000_000
 
-      # Just now (< 10 seconds)
-      assert TimeFormatter.format_timestamp_ago(now) == "just now"
-      assert TimeFormatter.format_timestamp_ago(now - 5_000) == "just now"
+    test "formats recent timestamps" do
+      assert TimeFormatter.format_timestamp_ago(@now, @now) == "just now"
+      assert TimeFormatter.format_timestamp_ago(@now - 5_000, @now) == "just now"
     end
 
     test "formats seconds ago" do
-      now = System.system_time(:millisecond)
-
-      assert TimeFormatter.format_timestamp_ago(now - 15_000) == "15s ago"
-      assert TimeFormatter.format_timestamp_ago(now - 45_000) == "45s ago"
+      assert TimeFormatter.format_timestamp_ago(@now - 15_000, @now) == "15s ago"
+      assert TimeFormatter.format_timestamp_ago(@now - 45_000, @now) == "45s ago"
     end
 
     test "formats minutes ago" do
-      now = System.system_time(:millisecond)
-
-      assert TimeFormatter.format_timestamp_ago(now - 120_000) == "2m ago"
-      assert TimeFormatter.format_timestamp_ago(now - 1_800_000) == "30m ago"
+      assert TimeFormatter.format_timestamp_ago(@now - 120_000, @now) == "2m ago"
+      assert TimeFormatter.format_timestamp_ago(@now - 1_800_000, @now) == "30m ago"
     end
 
     test "formats hours ago" do
-      now = System.system_time(:millisecond)
+      assert TimeFormatter.format_timestamp_ago(@now - 7_200_000, @now) == "2h ago"
+      assert TimeFormatter.format_timestamp_ago(@now - 18_000_000, @now) == "5h ago"
+    end
 
-      assert TimeFormatter.format_timestamp_ago(now - 7_200_000) == "2h ago"
-      assert TimeFormatter.format_timestamp_ago(now - 18_000_000) == "5h ago"
+    test "defaults the reference to the current time" do
+      # Wide enough bucket that clock drift during the call cannot change it.
+      assert TimeFormatter.format_timestamp_ago(System.system_time(:millisecond) - 7_200_000) ==
+               "2h ago"
     end
 
     test "returns never for invalid input" do

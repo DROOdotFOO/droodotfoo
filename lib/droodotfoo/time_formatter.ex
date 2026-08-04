@@ -74,19 +74,26 @@ defmodule Droodotfoo.TimeFormatter do
   @doc """
   Formats a DateTime to relative time from now.
 
+  Accepts an explicit reference time as the second argument so callers can
+  pin "now" instead of reading the clock mid-comparison.
+
   ## Examples
 
       iex> dt = DateTime.utc_now() |> DateTime.add(-3600, :second)
       iex> Droodotfoo.TimeFormatter.format_datetime_relative(dt)
       "1h ago"
   """
-  def format_datetime_relative(%DateTime{} = dt) do
-    diff = DateTime.diff(DateTime.utc_now(), dt)
-    format_relative_time(diff)
+  def format_datetime_relative(%DateTime{} = dt, %DateTime{} = now \\ DateTime.utc_now()) do
+    now
+    |> DateTime.diff(dt)
+    |> format_relative_time()
   end
 
   @doc """
   Formats a millisecond timestamp as relative time ago string.
+
+  Accepts an explicit reference timestamp in milliseconds as the second
+  argument so callers can pin "now" instead of reading the clock mid-comparison.
 
   ## Examples
 
@@ -94,8 +101,9 @@ defmodule Droodotfoo.TimeFormatter do
       iex> Droodotfoo.TimeFormatter.format_timestamp_ago(ts)
       "1h ago"
   """
-  def format_timestamp_ago(timestamp) when is_integer(timestamp) do
-    now = System.system_time(:millisecond)
+  def format_timestamp_ago(timestamp, now \\ System.system_time(:millisecond))
+
+  def format_timestamp_ago(timestamp, now) when is_integer(timestamp) and is_integer(now) do
     diff_ms = now - timestamp
     diff_seconds = div(diff_ms, 1000)
 
@@ -116,7 +124,7 @@ defmodule Droodotfoo.TimeFormatter do
     end
   end
 
-  def format_timestamp_ago(_), do: "never"
+  def format_timestamp_ago(_, _), do: "never"
 
   @doc """
   Parses ISO8601 datetime string and formats as relative time.

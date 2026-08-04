@@ -348,8 +348,10 @@ defmodule Droodotfoo.Content.Posts do
       |> String.replace(~r/!\[[^\]]*\]\([^\)]*\)/m, "")
       # Remove inline links but keep text
       |> String.replace(~r/\[([^\]]+)\]\([^\)]*\)/m, "\\1")
-      # Remove YAML frontmatter if present
-      |> String.replace(~r/^---\n[\s\S]*?\n---\n/m, "")
+      # Remove leading YAML frontmatter if present. Anchored to the start of the
+      # string so that `---` horizontal rules in the body are not mistaken for
+      # frontmatter delimiters, which would drop every section between them.
+      |> String.replace(~r/\A---\n[\s\S]*?\n---\n/, "")
 
     words =
       text
