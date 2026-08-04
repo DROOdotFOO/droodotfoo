@@ -159,7 +159,6 @@ defmodule Droodotfoo.Wiki.Ingestion.NLabPipeline do
     }
   end
 
-
   defp render_page(page) do
     page.content
     |> MathRenderer.prepare_math()
