@@ -148,7 +148,6 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryPipeline do
     }
   end
 
-
   @unwanted_selectors ~w(nav header footer .navigation .sidebar #menu script style noscript)
 
   defp clean_html(html) do

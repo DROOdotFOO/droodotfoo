@@ -192,7 +192,6 @@ defmodule Droodotfoo.Wiki.Ingestion.OSRSPipeline do
     }
   end
 
-
   defp maybe_store_raw(%{wikitext: nil}, _slug), do: {:ok, nil}
   defp maybe_store_raw(%{wikitext: ""}, _slug), do: {:ok, nil}
   defp maybe_store_raw(%{wikitext: wikitext}, slug), do: Storage.put_raw(@source, slug, wikitext)

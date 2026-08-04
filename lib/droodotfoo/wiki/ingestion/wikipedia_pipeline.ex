@@ -172,7 +172,6 @@ defmodule Droodotfoo.Wiki.Ingestion.WikipediaPipeline do
     }
   end
 
-
   @unwanted_selectors ~w(script style .mw-editsection .navbox .sistersitebox .noprint #coordinates)
 
   defp clean_html(html) do

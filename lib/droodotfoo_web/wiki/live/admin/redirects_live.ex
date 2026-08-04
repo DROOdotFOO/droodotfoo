@@ -200,5 +200,4 @@ defmodule DroodotfooWeb.Wiki.Admin.RedirectsLive do
   defp source_label(:vintage_machinery), do: "VintageMachinery"
   defp source_label(:wikiart), do: "WikiArt"
   defp source_label(source), do: to_string(source)
-
 end

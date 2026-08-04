@@ -229,7 +229,6 @@ defmodule Droodotfoo.Wiki.Ingestion.VintageMachineryWaybackPipeline do
     }
   end
 
-
   defp extract_title(doc, fallback_url) do
     case Floki.find(doc, "title") do
       [{_, _, [title]}] -> String.trim(title)

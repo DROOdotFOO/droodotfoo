@@ -162,5 +162,4 @@ defmodule DroodotfooWeb.Wiki.SitemapController do
       </url>
     """
   end
-
 end

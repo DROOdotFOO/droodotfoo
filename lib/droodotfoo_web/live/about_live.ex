@@ -100,7 +100,8 @@ defmodule DroodotfooWeb.AboutLive do
           (<.ext_link
             href="https://github.com/zed-industries/extensions/tree/main/extensions/aztec-noir"
             text="aztec-noir"
-          />, <.ext_link
+          />,
+          <.ext_link
             href="https://github.com/zed-industries/extensions/tree/main/extensions/synthwave84"
             text="synthwave84"
           />) in the Zed marketplace.
