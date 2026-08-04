@@ -14,45 +14,41 @@ pattern_style: "circuit"
   </object>
 </div>
 
-# Module 1: Proof of Architecture
+# Module 1: Proof of architecture
 
-Like building a gundam—one module at a time.
+Like building a gundam, one module at a time.
 
 This site is Module 1. If the content system isn't modular, [mana](/projects#mana) won't be. If the monospace grid breaks here, it breaks in [raxol](/projects#raxol). If patterns can't handle blog posts, they can't handle validator dashboards.
 
-**The stack:** Phoenix 1.8 + LiveView, MDEx, file-based content, deterministic SVG generation
-**The test:** Character-perfect terminal grid across browsers
-**The workflow:** Obsidian/Zed → API → Live
+The stack is Phoenix 1.8 and LiveView, MDEx, file-based content, deterministic SVG generation. The test is a character-perfect terminal grid that holds across browsers. The workflow runs Obsidian or Zed to an API endpoint to live.
 
 ---
 
-## The Constraints
+## The constraints
 
-The architecture must satisfy:
+The architecture has to satisfy:
 
-- **Monospace terminal interface** with character-perfect grid alignment
-- **No layout shifts** or font rendering surprises across browsers
-- **Highly portable** — minimal dependencies, file-based data
-- **Accessibility first** — WCAG compliance, proper ARIA, screen reader support
-- **[Raxol](/projects#raxol) compatibility** — terminal framework uses same rendering
+- A monospace terminal interface with character-perfect grid alignment
+- No layout shifts or font rendering surprises across browsers
+- Portability, meaning minimal dependencies and file-based data
+- Accessibility as a first-class constraint: WCAG compliance, proper ARIA, screen reader support
+- [Raxol](/projects#raxol) compatibility, since the terminal framework uses the same rendering
 
-Additionally, it must pass the "squint test": visible monospace grid with precise character spacing, highly optimized for legibility and visual rhythm.
+It also has to pass the squint test. A visible monospace grid with precise character spacing, optimized hard for legibility and visual rhythm.
 
-I addressed font constraints using the [monaspace font family](https://monaspace.githubnext.com/). Monaspace provides texture healing—adjusting letter spacing dynamically to create visually even text density while maintaining strict monospace alignment.
+I handled the font constraints with the [monaspace font family](https://monaspace.githubnext.com/). Monaspace does texture healing, adjusting letter spacing dynamically so text density reads as even while the alignment stays strictly monospace.
 
-**Character-perfect grid alignment became the first real problem.**
-
-CSS handles 1ch units differently across browsers. Safari rendered 1ch at ~0.1ch wider than Chrome—enough to break alignment after 80 characters.
+Character-perfect grid alignment turned out to be the first real problem. CSS handles 1ch units differently across browsers. Safari rendered 1ch about 0.1ch wider than Chrome, which is enough to break alignment after 80 characters.
 
 ---
 
-## Pattern Generation: Reproducible Art
+## Pattern generation
 
 Every post needs a visual. Manual design doesn't scale, and the site looked too stark without imagery.
 
-Solution: deterministic pattern generation. Hash the slug, seed the RNG, generate SVG. Reproducible, cacheable, zero manual work.
+So: deterministic pattern generation. Hash the slug, seed the RNG, generate SVG. Reproducible, cacheable, zero manual work.
 
-I used functional patterns idiomatic to Elixir. Partially because imperative patterns give me existential dread.
+I used functional patterns idiomatic to Elixir, partly because imperative patterns give me existential dread.
 
 ```elixir
 def generate_svg(slug, opts \\ []) do
@@ -66,13 +62,13 @@ def generate_svg(slug, opts \\ []) do
 end
 ```
 
-Eight basic pattern styles for now— the slug hash determines which one. No database, no storage, just deterministic math. See all at [/pattern-gallery](/pattern-gallery).
+Eight basic styles for now, and the slug hash picks one. No database, no storage, just deterministic math. See them at [/dev/pattern-gallery](/dev/pattern-gallery).
 
-This infrastructure now is reusable. Any content—posts, projects, validator dashboards—gets deterministic artwork with the same code. Moving along...
+The infrastructure is reusable. Posts, projects, validator dashboards, anything gets deterministic artwork out of the same code.
 
-## Phoenix LiveView: The Runtime
+## Phoenix LiveView
 
-Phoenix LiveView handles server-side rendering and real-time updates without JavaScript bloat. Components are pure functions: data in, UI out.
+LiveView handles server-side rendering and real-time updates without JavaScript bloat. Components are pure functions: data in, UI out.
 
 ```elixir
 def render(assigns) do
@@ -85,7 +81,7 @@ def render(assigns) do
 end
 ```
 
-## File-Based Content: Data as Files
+## File-based content
 
 No database. Git for version control, `resume.json` as the data source. Posts are markdown with YAML frontmatter. Files version naturally, backups are trivial, migration is straightforward.
 
@@ -103,9 +99,9 @@ def all do
 end
 ```
 
-Pattern matching transforms data shapes. Defense and portfolio projects become the same struct. No if/else, no type checking—just data transformation.
+Pattern matching transforms data shapes. Defense and portfolio projects become the same struct. No if/else, no type checking, just data transformation.
 
-## Obsidian → Web: Terminal Workflow
+## Obsidian to web
 
 I write in [Obsidian](https://obsidian.md/) or [Zed](https://zed.dev/). The API endpoint accepts markdown and writes to `priv/posts/slug.md`:
 
@@ -126,79 +122,62 @@ curl -X POST https://droo.foo/api/posts \
 
 No GUI, no admin panel. The endpoint extends to any content type.
 
-### Security Implementation
+### Security
 
-Three layers of defense: bearer token authentication, IP-based rate limiting (10/hour, 50/day), and content validation (path traversal prevention, slug sanitization, 1MB max). No token bypass—endpoint returns 401 if unconfigured.
-
-Implementation details and usage examples coming in a future post on API security patterns.
+Three layers: bearer token authentication, IP-based rate limiting at 10/hour and 50/day, and content validation covering path traversal, slug sanitization, and a 1MB cap. There is no token bypass. The endpoint returns 401 if it isn't configured.
 
 ---
 
-## What Broke (And How I Fixed It)
+## What broke
 
-### CSS Precision Crisis
+### CSS precision
 
-**Safari** rendered 1ch at _~0.1ch_ wider than **Chrome**—enough to misalign the grid after 80 characters.
-**Firefox** had different quirks with `font-feature-settings`.
+Safari rendered 1ch about 0.1ch wider than Chrome, enough to misalign the grid after 80 characters. Firefox had its own quirks with `font-feature-settings`.
 
-**Why this mattered:** The monospace grid isn't aesthetic—it's **architectural**. If the grid breaks here, Raxol breaks. The terminal framework depends on character-perfect alignment.
+The grid isn't decoration here, it's architecture. If it breaks in this codebase it breaks in Raxol, because the terminal framework depends on character-perfect alignment.
 
 The fix:
 
 1. `font-feature-settings: 'liga' 0, 'calt' 0` to disable ligatures
-2. CSS cascade control—no inherited text transforms or letter spacing
+2. CSS cascade control, so nothing inherits text transforms or letter spacing
 3. JavaScript validation on resize to lock the grid
 
-The monospace grid is the [agalma](/posts/the-agalma)—the idealized constraint driving every architectural decision. If this foundation breaks, everything built on it collapses.
+The monospace grid is the [agalma](/posts/the-agalma) of this project, the idealized constraint driving every architectural decision. If the foundation breaks, everything on top of it goes with it.
 
-Next step: write tests for more browsers (Ladybird, Edge, terminal browsers) and observe rendering execution.
+Next: tests against more browsers (Ladybird, Edge, terminal browsers) and a closer look at rendering execution.
 
-### GitHub API Rate Limiting
+### GitHub API rate limiting
 
-The API allows 60 requests/hour without authentication. With 10+ projects, each page load exhausted the limit after one visitor.
+The API allows 60 requests/hour unauthenticated. With 10+ projects, a single visitor exhausted the limit on one page load.
 
-Built a caching layer with ETS (Erlang's in-memory key-value store). One GenServer fetches data on startup, caches it, refreshes hourly. Cache hit rate after warmup: 98%.
+I built a caching layer on ETS, Erlang's in-memory key-value store. One GenServer fetches on startup, caches, and refreshes hourly. Cache hit rate after warmup is 98%.
 
-**Pros:** No external dependencies, no token management, instant response times.
-**Cons:** Single-server state. Future: distributed cache or authenticated API calls.
+That buys no external dependencies, no token management, and instant response times, at the cost of single-server state. Distributed cache or authenticated API calls when that becomes the problem.
 
-### Pattern Generation Iterations
+### Pattern generation iterations
 
-Pattern generation went through three iterations. Version three was a complete refactor:
+Three iterations. The third was a full refactor: each pattern type became its own module, pattern selection moved to pattern matching on hash ranges, and the SVG builder became a pure function, same input to same output every time. Generation dropped from about 15ms to under 5ms.
 
-1. Each pattern type became its own module
-2. Pattern selection used pattern matching on hash ranges
-3. SVG builder became a pure function—same input, same output, every time
+### Accessibility
 
-**Result:** Pattern generation dropped from ~15ms to <5ms.
+ARIA roles conflicting with semantic HTML. Terminal grids don't map cleanly onto web semantics, because the terminal is a grid of cells and a dynamic application at the same time. Screen readers expected one thing and the DOM provided another.
 
-### Accessibility: The Hidden Complexity
+Claiming accessibility as a first-class constraint means nothing if screen readers can't navigate the interface or keyboard users get trapped in the grid.
 
-**ARIA roles conflicting with semantic HTML.** Terminal grids don't map cleanly to web semantics. The terminal is a grid of cells _and_ a dynamic application. Screen readers expected one thing, the DOM provided another.
+Two halves to the problem. Structure: terminal cells needed proper ARIA roles without breaking semantic HTML, navigable but not chatty. Updates: LiveView pushes constantly, and screen readers needed to know when content changed without announcing every cell modification.
 
-**Why this mattered:** Claiming accessibility as a first-class constraint means nothing if screen readers can't navigate the interface or keyboard users get trapped in the grid.
+The fix was roving tabindex for keyboard navigation, so only one element is focusable at a time and arrow keys move focus; `aria-live="polite"` regions for terminal output, so new content gets announced without interrupting; and semantic grouping with a real role hierarchy, terminal as application with the grid structure underneath.
 
-Two-part problem:
+Not perfect. Still testing with NVDA, VoiceOver, and JAWS. Navigable and usable, which is the baseline.
 
-1. **Structure:** Terminal cells needed proper ARIA roles without breaking semantic HTML. Grid must be navigable but not chatty.
-2. **Updates:** LiveView pushes updates constantly. Screen readers needed to know _when_ content changed without announcing every cell modification.
+## The numbers
 
-The fix:
+- Pattern generation: under 5ms per SVG, 2000 lines of code total
+- GitHub cache: 98% hit rate, under 1ms on cached responses
+- Page load: under 200ms to first paint, 50ms LiveView connection, zero layout shift
+- Build: 8s full, under 1s incremental
 
-1. **Roving tabindex** for keyboard navigation—only one focusable element at a time, arrow keys move focus
-2. **`aria-live="polite"`** regions for terminal output—screen readers announce new content without interrupting
-3. **Semantic grouping** with proper role hierarchy—terminal as application, grid structure underneath
-
-Not perfect yet. Still testing with NVDA, VoiceOver, and JAWS. But navigable and usable—the baseline is met.
-
-## The Final Numbers
-
-**Pattern generation:** <5ms per SVG (2000 lines total)
-**GitHub cache:** 98% hit rate (<1ms cached responses)
-**Page load:** <200ms first paint, 50ms LiveView connection, zero layout shift
-**Build:** 8s full, <1s incremental
-
-## What This Unlocks
+## What this unlocks
 
 - Pattern generator -> reusable library
 - Components -> design system

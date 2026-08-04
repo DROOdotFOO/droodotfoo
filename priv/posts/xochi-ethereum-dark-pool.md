@@ -39,8 +39,8 @@ Xochi is what happens when you spend five years running bare-metal blockchain in
 ## What could go wrong
 
 <div class="post-image-float-left">
-<img src="/images/blog/the-wrestle-of-jacob-1855.webp" alt="Jacob Wrestling with the Angel by Gustave Dore (1855) - A man and an angel locked in a night-long struggle by a riverbank, the man marked by the encounter, neither letting go" loading="lazy" />
-<p class="post-caption"><em>Jacob Wrestling with the Angel</em> (1855) - Gustave Dore.</p>
+<img src="/images/blog/the-wrestle-of-jacob-1855.webp" alt="Jacob Wrestling with the Angel by Gustave Doré (1855) - A man and an angel locked in a night-long struggle by a riverbank, the man marked by the encounter, neither letting go" loading="lazy" />
+<p class="post-caption"><em>Jacob Wrestling with the Angel</em> (1855) - Gustave Doré.</p>
 </div>
 
 I want to get this out of the way early, because most projects bury their risks at the bottom and hope you don't scroll that far.
@@ -80,7 +80,7 @@ Intent Submitted -> Riddler Routes -> ZK Compliance -> Shielded Settlement
 (private intent)    (solver network)  (ERC-8262 proof)  (L1 stealth | L2 Aztec via pxe-bridge)
 ```
 
-Xochi hides the trade itself. This is called Private Execution-- for amounts and counterparties. Liquidity comes from solvers who hold inventory and fill peer-to-peer. Riddler maintains its own book; overflow goes through private RFQ channels with market makers who never see the original intent. The trade never touches a public pool.
+Xochi hides the trade itself, private execution covering both the amounts and the counterparties. Liquidity comes from solvers who hold inventory and fill peer-to-peer. Riddler maintains its own book; overflow goes through private RFQ channels with market makers who never see the original intent. The trade never touches a public pool.
 
 Sandwich bots extract 0.1-5%+ per trade on average ([EigenPhi via Cointelegraph Research, Dec 2025](https://cointelegraph.com/research/exclusive-data-from-eigenphi-reveals-that-sandwich-attacks-on-ethereum-have-waned)). On a $100K swap, that's $100 to $5,000 gone before LP fees ever touch the trade.
 
@@ -101,7 +101,7 @@ Before you've done anything, before you've expressed any intent, you've handed o
 
 > What _real_ privacy product could grow from the seed a privacy sin?
 
-This necessitated for us to allow for a safer and more seamless alternative we can provide for normies to still walk the privacy path as they learn.
+So we needed a safer default, something that lets normies walk the privacy path while they are still learning it.
 
 ### Introducing XID
 
@@ -109,7 +109,7 @@ XID works differently. You touch a fingerprint sensor. The browser creates a pas
 
 Wallets come later, if at all. Some users are here for a single swap and shouldn't need an account for that. Connect any EVM wallet, skip XID entirely, trade at Standard tier. For everyone else, the wallet link exists only in the browser session. The server doesn't record it. If the credential store leaked tomorrow, an attacker would find encrypted blobs keyed by hashes. Nothing to correlate with on-chain activity.
 
-This is what makes the trust score work. Without pseudonymous identity, attestations have to anchor to wallet addresses, which are public and trivially deanonymized through chain analysis. Our XID allows earning deeper privacy without requiring sacrifice it at the front door.
+This is what makes the trust score work. Without pseudonymous identity, attestations have to anchor to wallet addresses, which are public and trivially deanonymized through chain analysis. XID lets you earn deeper privacy without sacrificing any at the front door.
 
 Identity verification is optional. Its benefits are not.
 
@@ -228,8 +228,8 @@ Raxol, our OTP-native agent runtime, ships with Xochi payment rails built in. Th
 ## The team
 
 <div class="post-image-float-right">
-<img src="/images/blog/don-quixote-and-sancho-setting-out-1863.webp" alt="Don Quixote and Sancho Setting Out by Gustave Dore (1863) - The knight in armor on a thin horse and his squire on a donkey, riding off together into a dawn landscape on a mission of uncertain outcome" loading="lazy" />
-<p class="post-caption"><em>Don Quixote and Sancho Setting Out</em> (1863) - Gustave Dore.</p>
+<img src="/images/blog/don-quixote-and-sancho-setting-out-1863.webp" alt="Don Quixote and Sancho Setting Out by Gustave Doré (1863) - The knight in armor on a thin horse and his squire on a donkey, riding off together into a dawn landscape on a mission of uncertain outcome" loading="lazy" />
+<p class="post-caption"><em>Don Quixote and Sancho Setting Out</em> (1863) - Gustave Doré.</p>
 </div>
 
 Five of us now. Jer and I overlapped at Blockdaemon running nodes across regions. Bloo was on the other side of the table, filing SARs at DOJ, investigating AML cases at FBI. The ZK compliance proofs went through a lot of iteration before they reached a shape she'd sign off on.
