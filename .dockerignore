@@ -44,3 +44,13 @@ erl_crash.dump
 /assets/node_modules/
 /priv/static/assets/
 /priv/static/cache_manifest.json
+
+# Dev-only nLab checkout. config/dev.exs clones here; production reads
+# /var/lib/wiki/nlab-content. `COPY priv priv` was baking ~270 MB of it into
+# the image and the upload was timing out the builder.
+/priv/nlab-content/
+
+# The Astro widget project. Its build output is committed under assets/astro/,
+# and the Dockerfile never copies src/, so this was ~200 MB of node_modules
+# uploaded on every deploy and then thrown away.
+/src/
