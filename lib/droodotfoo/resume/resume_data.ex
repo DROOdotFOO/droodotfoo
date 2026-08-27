@@ -361,8 +361,8 @@ defmodule Droodotfoo.Resume.ResumeData do
           project: "FFmpeg",
           title: "aarch64 NEON optimizations for swscale and libavfilter",
           description:
-            "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit LE and BE packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. 12 commits across four merged pull requests. First libavfilter aarch64 patch (vf_threshold) in review.",
-          url: "https://code.ffmpeg.org/DROOdotFOO?tab=activity",
+            "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit LE and BE packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. 12 commits merged into master across four patch series. First libavfilter aarch64 patch (vf_threshold) open in review.",
+          url: "https://code.ffmpeg.org/DROOdotFOO",
           type: "merged",
           date: "2026-06",
           tags: ["C", "aarch64", "NEON", "SIMD", "swscale", "libavfilter"]

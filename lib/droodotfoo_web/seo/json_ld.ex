@@ -16,6 +16,7 @@ defmodule DroodotfooWeb.SEO.JsonLD do
       "image" => "https://droo.foo/images/og-image.png",
       "sameAs" => [
         "https://github.com/DROOdotFOO",
+        "https://code.ffmpeg.org/DROOdotFOO",
         "https://x.com/DROOdotFOO",
         "https://www.linkedin.com/in/drewahyde"
       ],

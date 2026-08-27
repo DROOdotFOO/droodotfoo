@@ -201,6 +201,22 @@
   ],
   "upstream_contributions": [
     {
+      "project": "FFmpeg",
+      "title": "aarch64 NEON optimizations for swscale and libavfilter",
+      "description": "ARM NEON assembly for swscale YUV->RGB conversion: 16-bit LE and BE packed paths plus the 2-line row-pair series co-authored with Ramiro Polla. 12 commits merged into master across four patch series. First libavfilter aarch64 patch (vf_threshold) open in review.",
+      "url": "https://code.ffmpeg.org/DROOdotFOO",
+      "type": "merged",
+      "date": "2026-06",
+      "tags": [
+        "C",
+        "aarch64",
+        "NEON",
+        "SIMD",
+        "swscale",
+        "libavfilter"
+      ]
+    },
+    {
       "project": "Ethereum ERCs",
       "title": "ERC-8262: Zero-Knowledge Compliance Oracle (co-author)",
       "description": "Six proof types in Noir circuits with multi-jurisdiction policy framework. Draft status on the Ethereum standards track.",

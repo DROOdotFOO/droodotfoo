@@ -87,12 +87,21 @@ defmodule DroodotfooWeb.AboutLive do
           is the terminal framework behind it. It started as a TUI project, but now it's the agent commerce layer for Xochi: wallets that can act on their own.
         </p>
         <p class="mt-1">
-          When something I depend on can be made faster or fixed, I send it upstream. Recent: ARM NEON
-          optimizations in
+          When something I depend on can be made faster, I send it upstream. Most of that
+          has gone to <.ext_link href="https://code.ffmpeg.org/DROOdotFOO" text="FFmpeg" />:
+          twelve commits merged into master, hand-written aarch64 NEON assembly for
+          libswscale's YUV to RGB conversion. The 16-bit output formats had no NEON path,
+          so anything asking for rgb565 or rgb555 on ARM fell back to C. Filling that in
+          runs 3.3x to 4.7x faster on an M1, and the row-pair series was co-authored with
+          Ramiro Polla. The first libavfilter aarch64 patch from that work is
           <.ext_link
-            href="https://code.ffmpeg.org/DROOdotFOO?tab=activity"
-            text="FFmpeg"
-          />, a Charon health check fix in Dappnode's
+            href="https://code.ffmpeg.org/FFmpeg/FFmpeg/pulls/23448"
+            text="in review"
+          />. Martin Storsjö benchmarked it across seven ARM cores and measured 60 to 70
+          percent on the A520 and A720, 10 to 20 percent on the rest.
+        </p>
+        <p class="mt-1">
+          Smaller fixes go the same way: a Charon health check fix in Dappnode's
           <.ext_link
             href="https://github.com/dappnode/DAppNodePackage-obol-generic/pull/90"
             text="Obol DVT package"
