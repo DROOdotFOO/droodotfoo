@@ -51,6 +51,10 @@ config :droodotfoo, DroodotfooWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warning
 
+# Keep the suite from rewriting the checked-in priv/resume_presets.json, which
+# it reaches through _build's symlink to priv/.
+config :droodotfoo, :preset_persist_path, Path.expand("../tmp/resume_presets.json", __DIR__)
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 

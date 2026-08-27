@@ -373,8 +373,16 @@ defmodule Droodotfoo.Resume.PresetManager do
     end)
   end
 
+  # `app_dir/2` resolves through _build's symlink back to the real priv/, so
+  # without an override the test suite rewrites the checked-in presets file on
+  # every run. Configurable so test config can point it at tmp.
+  defp persist_path do
+    Application.get_env(:droodotfoo, :preset_persist_path) ||
+      Application.app_dir(:droodotfoo, @persist_file)
+  end
+
   defp load_persisted_presets(table) do
-    preset_file = Application.app_dir(:droodotfoo, @persist_file)
+    preset_file = persist_path()
 
     case File.read(preset_file) do
       {:ok, json_content} ->
@@ -413,7 +421,7 @@ defmodule Droodotfoo.Resume.PresetManager do
       |> Enum.filter(fn {_name, preset} -> not preset.is_system end)
       |> Enum.map(fn {_name, preset} -> preset end)
 
-    preset_file = Application.app_dir(:droodotfoo, @persist_file)
+    preset_file = persist_path()
 
     # Ensure directory exists
     File.mkdir_p!(Path.dirname(preset_file))
