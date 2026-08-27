@@ -1,9 +1,14 @@
 defmodule DroodotfooWeb.Plugs.RequestLogger do
   @moduledoc """
-  Logs slow requests and adds request timing to response headers.
+  Logs slow requests, adds request timing to response headers, and feeds
+  `Droodotfoo.PerformanceMonitor`.
 
   Requests exceeding the configured threshold are logged as warnings,
   making it easy to identify performance bottlenecks.
+
+  This is the only thing that populates the monitor's counters. Every request
+  that is not on `:exclude_paths` is recorded here, so the periodic performance
+  report describes real traffic rather than a single LiveView mount.
 
   ## Configuration
 
@@ -22,6 +27,8 @@ defmodule DroodotfooWeb.Plugs.RequestLogger do
   @behaviour Plug
 
   require Logger
+
+  alias Droodotfoo.PerformanceMonitor
 
   @default_threshold_ms 500
   @default_exclude_paths ["/health"]
@@ -49,12 +56,26 @@ defmodule DroodotfooWeb.Plugs.RequestLogger do
         conn =
           Plug.Conn.put_resp_header(conn, "x-request-duration-ms", Integer.to_string(duration_ms))
 
+        record_metrics(conn, duration_ms)
+
         if duration_ms >= opts.slow_threshold_ms do
           log_slow_request(conn, duration_ms, opts.log_level)
         end
 
         conn
       end)
+    end
+  end
+
+  # Only 5xx counts as an error. A 404 is a normal answer to a bad URL, and
+  # counting those would peg the error rate at whatever share of traffic is
+  # mistyped links.
+  defp record_metrics(conn, duration_ms) do
+    PerformanceMonitor.record_request()
+    PerformanceMonitor.record_render_time(duration_ms)
+
+    if is_integer(conn.status) and conn.status >= 500 do
+      PerformanceMonitor.record_error()
     end
   end
 

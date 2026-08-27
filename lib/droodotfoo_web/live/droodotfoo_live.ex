@@ -15,8 +15,9 @@ defmodule DroodotfooWeb.DroodotfooLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    # Record page request
-    Droodotfoo.PerformanceMonitor.record_request()
+    # Requests are counted in DroodotfooWeb.Plugs.RequestLogger, which sees
+    # every route. Counting here too would double the homepage and miss
+    # everything else.
 
     # Load latest posts for homepage
     latest_posts =

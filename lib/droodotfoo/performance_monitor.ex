@@ -9,8 +9,9 @@ defmodule Droodotfoo.PerformanceMonitor do
 
   # Keep last 100 measurements
   @metrics_window 100
-  # Report every minute
-  @report_interval 60_000
+  # Report every 15 minutes. At one minute this produced 1440 fourteen-line
+  # blocks a day, which buried everything else in the log.
+  @report_interval 15 * 60_000
 
   defstruct [
     :render_times,
@@ -180,7 +181,7 @@ defmodule Droodotfoo.PerformanceMonitor do
     Requests: #{summary.total_requests} (#{summary.requests_per_minute} req/min)
     Errors: #{summary.total_errors} (#{summary.error_rate}%)
 
-    Render Times:
+    Request Duration:
       Avg: #{summary.avg_render_time}ms
       Min: #{summary.min_render_time}ms
       Max: #{summary.max_render_time}ms
