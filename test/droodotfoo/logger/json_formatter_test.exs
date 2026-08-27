@@ -61,5 +61,38 @@ defmodule Droodotfoo.Logger.JsonFormatterTest do
       {:ok, parsed} = Jason.decode(json)
       assert parsed["message"] == "Hello World"
     end
+
+    # Sentry's over-quota reply arrives with a lone 0xB9 where a superscript one
+    # should be. That byte used to raise Jason.EncodeError and drop a plain-text
+    # line into the middle of the JSON stream.
+    test "replaces invalid UTF-8 in the message instead of falling back" do
+      timestamp = {{2026, 1, 25}, {12, 0, 0, 0}}
+      message = <<"error response from service exported to status=429 ", 0xB9>>
+
+      [json, "\n"] = JsonFormatter.format(:info, message, timestamp, [])
+
+      assert {:ok, parsed} = Jason.decode(json)
+      assert parsed["message"] == "error response from service exported to status=429 ?"
+    end
+
+    test "replaces invalid UTF-8 in metadata values" do
+      timestamp = {{2026, 1, 25}, {12, 0, 0, 0}}
+      metadata = [request_id: <<"abc", 0xB9, "123">>]
+
+      [json, "\n"] = JsonFormatter.format(:info, "Test", timestamp, metadata)
+
+      assert {:ok, parsed} = Jason.decode(json)
+      assert parsed["metadata"]["request_id"] == "abc?123"
+    end
+
+    test "emits JSON even when the entry cannot be formatted" do
+      # A malformed timestamp raises inside format_timestamp/1.
+      [json, "\n"] = JsonFormatter.format(:error, "Test", :not_a_timestamp, [])
+
+      assert {:ok, parsed} = Jason.decode(json)
+      assert parsed["level"] == "error"
+      assert parsed["message"] == "log formatting failed"
+      assert is_binary(parsed["error"])
+    end
   end
 end

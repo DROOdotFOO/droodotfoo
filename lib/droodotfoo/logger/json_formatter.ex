@@ -26,7 +26,7 @@ defmodule Droodotfoo.Logger.JsonFormatter do
       %{
         timestamp: format_timestamp(timestamp),
         level: level,
-        message: IO.iodata_to_binary(message)
+        message: message |> IO.iodata_to_binary() |> scrub()
       }
       |> add_metadata(metadata)
       |> Jason.encode!()
@@ -34,8 +34,16 @@ defmodule Droodotfoo.Logger.JsonFormatter do
     [json, "\n"]
   rescue
     e ->
-      # Fallback to basic format if JSON encoding fails
-      "#{format_timestamp(timestamp)} [#{level}] #{message} (JSON format error: #{inspect(e)})\n"
+      # Still emit JSON: a single unformattable entry must not put a plain-text
+      # line into the stream and break every downstream parser.
+      json =
+        Jason.encode!(%{
+          level: level,
+          message: "log formatting failed",
+          error: e |> Exception.message() |> scrub()
+        })
+
+      [json, "\n"]
   end
 
   defp format_timestamp({date, {hour, minute, second, micro}}) do
@@ -63,7 +71,22 @@ defmodule Droodotfoo.Logger.JsonFormatter do
     end
   end
 
-  defp format_value(v) when is_binary(v), do: v
+  # Log messages carry bytes from anywhere: a third-party error string cut mid
+  # codepoint, a latin-1 payload, a binary echoed back from a socket. Jason
+  # raises on invalid UTF-8, so replace the offending bytes and keep the entry
+  # rather than losing it to the rescue clause.
+  defp scrub(binary) do
+    if String.valid?(binary), do: binary, else: scrub(binary, <<>>)
+  end
+
+  defp scrub(<<>>, acc), do: acc
+
+  defp scrub(<<codepoint::utf8, rest::binary>>, acc),
+    do: scrub(rest, <<acc::binary, codepoint::utf8>>)
+
+  defp scrub(<<_invalid, rest::binary>>, acc), do: scrub(rest, <<acc::binary, "?">>)
+
+  defp format_value(v) when is_binary(v), do: scrub(v)
   defp format_value(v) when is_atom(v), do: Atom.to_string(v)
   defp format_value(v) when is_number(v), do: v
   defp format_value(v) when is_list(v), do: Enum.map(v, &format_value/1)
