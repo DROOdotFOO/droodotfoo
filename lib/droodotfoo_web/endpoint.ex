@@ -71,6 +71,10 @@ defmodule DroodotfooWeb.Endpoint do
     param_key: "request_logger",
     cookie_key: "request_logger"
 
+  # Ahead of Plug.Telemetry on purpose: scanner probes halt here, so they never
+  # fire the endpoint start event and never reach the log.
+  plug DroodotfooWeb.Plugs.BotFilter
+
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
