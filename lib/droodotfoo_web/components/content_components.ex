@@ -45,9 +45,13 @@ defmodule DroodotfooWeb.ContentComponents do
   """
   def site_header(assigns) do
     assigns =
-      assign(assigns, :updated_on, Droodotfoo.Core.Config.released_on() |> Date.to_string())
-
-    assigns = assign(assigns, :version, Application.spec(:droodotfoo, :vsn) |> to_string())
+      assigns
+      |> assign(:updated_on, Droodotfoo.Site.updated_on())
+      |> assign(:version, Droodotfoo.Site.version())
+      |> assign(:site_name, Droodotfoo.Site.name())
+      |> assign(:tagline, Droodotfoo.Site.tagline())
+      |> assign(:author, Droodotfoo.Site.author())
+      |> assign(:author_url, Droodotfoo.Site.author_url())
 
     ~H"""
     <header class="site-header" role="banner">
@@ -57,16 +61,16 @@ defmodule DroodotfooWeb.ContentComponents do
           <td class="header-title" colspan="2">
             <.nav_link
               navigate={~p"/"}
-              text="DROO.FOO"
+              text={@site_name}
               class="site-title"
-              aria-label="DROO.FOO - Return to homepage"
+              aria-label={"#{@site_name} - Return to homepage"}
             />
           </td>
           <td class="header-meta-label">Version</td>
           <td class="header-meta-value header-meta-value-right">v{@version}</td>
         </tr>
         <tr>
-          <td class="header-subtitle" colspan="2">Engineer building his Gundam</td>
+          <td class="header-subtitle" colspan="2">{@tagline}</td>
           <td class="header-meta-label">Updated</td>
           <td class="header-meta-value header-meta-value-right">
             <time datetime={@updated_on}>{@updated_on}</time>
@@ -76,9 +80,9 @@ defmodule DroodotfooWeb.ContentComponents do
           <td class="header-meta-label header-author-label">Author</td>
           <td class="header-meta-value" colspan="3">
             <.ext_link
-              href="https://github.com/DROOdotFOO/droodotfoo"
-              text="DROO"
-              aria-label="DROO on GitHub - droodotfoo repository (opens in new tab)"
+              href={@author_url}
+              text={@author}
+              aria-label={"#{@author} on GitHub - droodotfoo repository (opens in new tab)"}
             />
           </td>
         </tr>

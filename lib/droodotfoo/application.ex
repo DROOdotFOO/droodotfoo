@@ -57,18 +57,42 @@ defmodule Droodotfoo.Application do
         Droodotfoo.Content.PatternRateLimiter,
         # Start wiki search rate limiter
         Droodotfoo.Wiki.Search.RateLimiter,
+        # Open Graph card renderer (owns the font database, serializes renders)
+        Droodotfoo.OG.Renderer,
         # Start a worker by calling: Droodotfoo.Worker.start_link(arg)
         # {Droodotfoo.Worker, arg},
         # Start to serve requests, typically the last entry
         DroodotfooWeb.Endpoint
       ] ++
+        og_status_children() ++
         dev_only_children() ++
         chromic_pdf_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Droodotfoo.Supervisor]
-    Supervisor.start_link(children, opts)
+
+    with {:ok, pid} <- Supervisor.start_link(children, opts) do
+      warm_og_cards()
+      {:ok, pid}
+    end
+  end
+
+  # Render every card off the request path so a crawler never waits on resvg.
+  # Renders block the sole scheduler in production, so this must not run inline
+  # with boot.
+  #
+  # Skipped under test: the resvg NIF runs on a normal scheduler, so warming
+  # every card starves whatever else the suite is doing for the ~2s it takes,
+  # which is enough to time out an unrelated GenServer call. The controller
+  # tests cover the render path on demand.
+  if Mix.env() == :test do
+    defp warm_og_cards, do: :ok
+  else
+    defp warm_og_cards do
+      Task.start(fn -> Droodotfoo.OG.Image.warm() end)
+      :ok
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -77,6 +101,15 @@ defmodule Droodotfoo.Application do
   def config_change(changed, _new, removed) do
     DroodotfooWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  # The status poller queries the Repo from a process that owns no sandbox
+  # connection, which would raise DBConnection.OwnershipError on every test run.
+  # Droodotfoo.OG.Status.get/0 defaults to :online without it.
+  if Mix.env() == :test do
+    defp og_status_children, do: []
+  else
+    defp og_status_children, do: [Droodotfoo.OG.Status]
   end
 
   # Development-only children (compile-time check to avoid Mix.env() at runtime)

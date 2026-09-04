@@ -152,7 +152,7 @@ defmodule Droodotfoo.Content.PostsTest do
       assert Posts.social_image_url(post) == "/images/custom-image.png"
     end
 
-    test "returns pattern URL with style when pattern_style is present" do
+    test "returns the OG card URL even when pattern_style is present" do
       post = %Post{
         slug: "test-post",
         title: "Test",
@@ -165,10 +165,12 @@ defmodule Droodotfoo.Content.PostsTest do
         read_time: 1
       }
 
-      assert Posts.social_image_url(post) == "/patterns/test-post?style=geometric"
+      # Patterns are SVG, which crawlers refuse to render as a card image.
+      assert Posts.social_image_url(post) == "/og/test-post.png"
+      assert Posts.pattern_url(post) == "/patterns/test-post?style=geometric"
     end
 
-    test "returns basic pattern URL when no featured_image or pattern_style" do
+    test "returns the OG card URL when there is no featured_image" do
       post = %Post{
         slug: "test-post",
         title: "Test",
@@ -180,7 +182,8 @@ defmodule Droodotfoo.Content.PostsTest do
         read_time: 1
       }
 
-      assert Posts.social_image_url(post) == "/patterns/test-post"
+      assert Posts.social_image_url(post) == "/og/test-post.png"
+      assert Posts.pattern_url(post) == "/patterns/test-post"
     end
 
     test "prioritizes featured_image over pattern_style" do
@@ -230,7 +233,7 @@ defmodule Droodotfoo.Content.PostsTest do
         read_time: 1
       }
 
-      assert Posts.social_image_alt(post) == "Visual pattern for: My Blog Post"
+      assert Posts.social_image_alt(post) == "Social card for: My Blog Post"
     end
 
     test "generates alt text from title when featured_image_alt is empty" do
@@ -246,7 +249,7 @@ defmodule Droodotfoo.Content.PostsTest do
         read_time: 1
       }
 
-      assert Posts.social_image_alt(post) == "Visual pattern for: Another Post"
+      assert Posts.social_image_alt(post) == "Social card for: Another Post"
     end
   end
 
