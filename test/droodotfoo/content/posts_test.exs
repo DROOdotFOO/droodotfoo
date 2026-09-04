@@ -166,7 +166,7 @@ defmodule Droodotfoo.Content.PostsTest do
       }
 
       # Patterns are SVG, which crawlers refuse to render as a card image.
-      assert Posts.social_image_url(post) == "/og/test-post.png"
+      assert Posts.social_image_url(post) =~ ~r"^/og/test-post\.png\?v=[\w-]{8}$"
       assert Posts.pattern_url(post) == "/patterns/test-post?style=geometric"
     end
 
@@ -182,8 +182,31 @@ defmodule Droodotfoo.Content.PostsTest do
         read_time: 1
       }
 
-      assert Posts.social_image_url(post) == "/og/test-post.png"
+      assert Posts.social_image_url(post) =~ ~r"^/og/test-post\.png\?v=[\w-]{8}$"
       assert Posts.pattern_url(post) == "/patterns/test-post"
+    end
+
+    test "the v token moves when the card content moves" do
+      post = %Post{
+        slug: "test-post",
+        title: "Test",
+        date: ~D[2025-01-01],
+        description: "",
+        tags: [],
+        content: "",
+        html: "",
+        read_time: 1
+      }
+
+      # Social platforms cache the fetched image against its URL, so a card
+      # that changes under a fixed URL never reaches anyone who already saw it.
+      assert Posts.social_image_url(post) == Posts.social_image_url(post)
+
+      refute Posts.social_image_url(post) ==
+               Posts.social_image_url(%Post{post | title: "Something else"})
+
+      refute Posts.social_image_url(post) ==
+               Posts.social_image_url(%Post{post | modified_time: ~D[2026-01-01]})
     end
 
     test "prioritizes featured_image over pattern_style" do

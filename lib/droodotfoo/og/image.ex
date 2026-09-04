@@ -7,9 +7,9 @@ defmodule Droodotfoo.OG.Image do
 
   Cards are deterministic given their inputs, so the cache key carries
   everything that appears on the image: the card identity, the app version, the
-  release date, and the current status. `@render_version` is bumped by hand when
-  the card design changes, which invalidates every cached PNG without waiting
-  for a TTL.
+  release date, and the current status. `Card.render_version/0` is bumped by
+  hand when the card design changes, which invalidates every cached PNG without
+  waiting for a TTL, and moves the URL token along with it.
 
   In practice there are only a handful of distinct cards and the key changes at
   most once per deploy, so entries are written once and read forever.
@@ -23,12 +23,6 @@ defmodule Droodotfoo.OG.Image do
 
   @namespace :og
   @ttl :timer.hours(24)
-
-  # Bump when the card design changes.
-  @render_version 1
-
-  @spec render_version() :: pos_integer()
-  def render_version, do: @render_version
 
   @doc """
   PNG for the site card.
@@ -87,6 +81,6 @@ defmodule Droodotfoo.OG.Image do
   end
 
   defp cache_key(%Card{} = card) do
-    {card.key, @render_version, card.version, card.updated, card.status}
+    {card.key, Card.render_version(), card.version, card.updated, card.status}
   end
 end

@@ -57,6 +57,7 @@ defmodule Droodotfoo.Content.Posts do
   use GenServer
   require Logger
   alias Droodotfoo.Content.PostValidator
+  alias Droodotfoo.OG.Card
 
   @posts_dir Application.compile_env(:droodotfoo, :posts_dir, "priv/posts")
   @table_name :posts_cache
@@ -165,14 +166,19 @@ defmodule Droodotfoo.Content.Posts do
   This deliberately does not use `pattern_url/1`: that endpoint serves
   `image/svg+xml`, which X, Slack, Discord, and LinkedIn all refuse to render as
   a card image.
+
+  The `v` token changes whenever the card does. Social platforms cache the
+  image they fetched against its URL and ignore ETags, so without it a
+  redesigned card would keep unfurling as the old one. See
+  `Droodotfoo.OG.Card.token/1`.
   """
   @spec social_image_url(Post.t()) :: String.t()
   def social_image_url(%Post{featured_image: image}) when is_binary(image) and image != "" do
     image
   end
 
-  def social_image_url(%Post{slug: slug}) do
-    "/og/#{slug}.png"
+  def social_image_url(%Post{slug: slug} = post) do
+    "/og/#{slug}.png?v=#{Card.post_token(post)}"
   end
 
   @doc """

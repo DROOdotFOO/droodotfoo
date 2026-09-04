@@ -99,6 +99,16 @@ defmodule DroodotfooWeb.OGImageControllerTest do
 
       assert {1200, 630} = png_dimensions(response(conn, 200))
     end
+
+    test "ignores the cache-busting v token", %{conn: conn, post: post} do
+      # Meta tags carry ?v=<token> so platform image proxies re-fetch a changed
+      # card. The token is addressed to them, and the controller must serve the
+      # current card whatever it says.
+      plain = build_conn() |> get(~p"/og/#{post.slug <> ".png"}") |> response(200)
+      tokenized = conn |> get(~p"/og/#{post.slug <> ".png"}?v=stale123") |> response(200)
+
+      assert plain == tokenized
+    end
   end
 
   describe "when rendering fails" do
@@ -151,10 +161,25 @@ defmodule DroodotfooWeb.OGImageControllerTest do
     test "point at the PNG card, not the SVG pattern", %{conn: _conn} do
       [post | _] = Posts.list_posts()
 
-      assert Posts.social_image_url(post) == "/og/#{post.slug}.png"
+      assert Posts.social_image_url(post) =~ ~r"^/og/#{post.slug}\.png\?v=[\w-]{8}$"
 
       # Patterns are still used for on-page decoration.
       assert Posts.pattern_url(post) =~ "/patterns/#{post.slug}"
+    end
+
+    test "the site card URL is absolute and tokenized" do
+      assert Droodotfoo.OG.Card.site_image_url() =~
+               ~r"^https://droo\.foo/og-image\.png\?v=[\w-]{8}$"
+    end
+
+    test "the rendered page carries the tokenized card URL", %{conn: conn} do
+      [post | _] = Posts.list_posts()
+
+      html = conn |> get(~p"/posts/#{post.slug}") |> html_response(200)
+
+      assert html =~
+               ~s(<meta property="og:image" content="https://droo.foo) <>
+                 Posts.social_image_url(post)
     end
   end
 end
