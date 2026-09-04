@@ -46,7 +46,7 @@
     <meta property="og:url" content={"https://droo.foo#{assigns[:current_path] || "/"}"} />
     <meta
       property="og:image"
-      content={assigns[:og_image] || "https://droo.foo/og-image.png"}
+      content={assigns[:og_image] || Droodotfoo.OG.Card.site_image_url()}
     />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
@@ -71,7 +71,9 @@
     />
     <meta
       name="twitter:image"
-      content={assigns[:twitter_image] || assigns[:og_image] || "https://droo.foo/og-image.png"}
+      content={
+        assigns[:twitter_image] || assigns[:og_image] || Droodotfoo.OG.Card.site_image_url()
+      }
     />
     
 <!-- Article-specific Meta Tags (for blog posts) -->

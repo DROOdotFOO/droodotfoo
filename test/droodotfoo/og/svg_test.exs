@@ -36,6 +36,19 @@ defmodule Droodotfoo.OG.SvgTest do
       assert labels == ~w(Home About Now Projects Writing Sitemap Contact)
     end
 
+    test "wiki card carries wiki branding and nav" do
+      svg = Svg.render(Card.wiki(:online))
+
+      assert svg =~ ">WIKI.DROO.FOO</text>"
+
+      labels =
+        ~r/>(?:\S+) ([A-Za-z.]+)<\/text>/
+        |> Regex.scan(svg, capture: :all_but_first)
+        |> List.flatten()
+
+      assert labels == ~w(Home Search OSRS nLab droo.foo)
+    end
+
     test "degraded status swaps the word and the colour" do
       online = Svg.render(Card.site(:online))
       degraded = Svg.render(Card.site(:degraded))

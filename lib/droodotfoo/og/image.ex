@@ -5,11 +5,11 @@ defmodule Droodotfoo.OG.Image do
   Thin wrapper over `Performance.Cache`, in the shape of
   `Droodotfoo.Content.PatternCache`, so it needs no supervision entry of its own.
 
-  Cards are deterministic given their inputs, so the cache key carries
-  everything that appears on the image: the card identity, the app version, the
-  release date, and the current status. `@render_version` is bumped by hand when
-  the card design changes, which invalidates every cached PNG without waiting
-  for a TTL.
+  Cards are deterministic given their inputs, so the cache key is
+  `Card.token/1`, the same value the image URL carries, plus the status the
+  token leaves out. `Card.render_version/0` is bumped by hand when the card
+  design changes, which invalidates every cached PNG without waiting for a TTL,
+  and moves the URL token along with it.
 
   In practice there are only a handful of distinct cards and the key changes at
   most once per deploy, so entries are written once and read forever.
@@ -24,17 +24,17 @@ defmodule Droodotfoo.OG.Image do
   @namespace :og
   @ttl :timer.hours(24)
 
-  # Bump when the card design changes.
-  @render_version 1
-
-  @spec render_version() :: pos_integer()
-  def render_version, do: @render_version
-
   @doc """
   PNG for the site card.
   """
   @spec site() :: {:ok, binary()} | {:error, term()}
   def site, do: fetch(Card.site(Status.get()))
+
+  @doc """
+  PNG for the wiki card.
+  """
+  @spec wiki() :: {:ok, binary()} | {:error, term()}
+  def wiki, do: fetch(Card.wiki(Status.get()))
 
   @doc """
   PNG for a post card. Falls back to the site card when the slug is unknown, so
@@ -56,9 +56,11 @@ defmodule Droodotfoo.OG.Image do
   @spec warm() :: :ok
   def warm do
     if Renderer.available?() do
-      cards = [
-        Card.site(Status.get()) | Enum.map(Posts.list_posts(), &Card.post(&1, Status.get()))
-      ]
+      status = Status.get()
+
+      cards =
+        [Card.site(status), Card.wiki(status)] ++
+          Enum.map(Posts.list_posts(), &Card.post(&1, status))
 
       results = Enum.map(cards, &fetch/1)
       failed = Enum.count(results, &match?({:error, _}, &1))
@@ -86,7 +88,12 @@ defmodule Droodotfoo.OG.Image do
     end
   end
 
+  # Keyed on the same token the image URL carries, so the two can never
+  # disagree about what makes a card distinct. Keying on a subset was a bug: a
+  # post retitled without a new date moved the URL but not the key, so the
+  # fresh URL served the old bytes and froze them into every platform proxy.
+  # `key` is redundant with the token and kept only so the entry is legible.
   defp cache_key(%Card{} = card) do
-    {card.key, @render_version, card.version, card.updated, card.status}
+    {card.key, Card.token(card), card.status}
   end
 end

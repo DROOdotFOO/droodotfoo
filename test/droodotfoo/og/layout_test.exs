@@ -74,6 +74,22 @@ defmodule Droodotfoo.OG.LayoutTest do
       assert Enum.join(lines, " ") == title
     end
 
+    test "shrinks rather than splitting a word across lines" do
+      # WIKI.DROO.FOO is one unbreakable token: at 120 it fits in two lines
+      # only as "WIKI.DRO" / "O.FOO", which is worse than a smaller whole one.
+      assert {size, [line]} = Layout.fit("WIKI.DROO.FOO", Layout.title_sizes(), 646, 2, -0.02)
+
+      assert line == "WIKI.DROO.FOO"
+      assert size < Layout.title_size()
+    end
+
+    test "splits a word only when no size avoids it" do
+      unbreakable = String.duplicate("A", 200)
+
+      assert {_size, lines} = Layout.fit(unbreakable, Layout.title_sizes(), 646, 2, -0.02)
+      assert length(lines) == 2
+    end
+
     test "truncates with an ellipsis only when the smallest size still overflows" do
       long = String.duplicate("word ", 200)
 

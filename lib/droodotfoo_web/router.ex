@@ -162,6 +162,9 @@ defmodule DroodotfooWeb.Router do
     pipe_through :og_image
 
     get "/og-image.png", OGImageController, :index
+    # Declared before "/og/:slug", which would otherwise swallow it. A post
+    # slugged "wiki" would lose its card to this route.
+    get "/og/wiki.png", OGImageController, :wiki
     # Not "/og/:slug.png" -- a route param consumes a whole segment, so the
     # suffix is stripped in the controller instead.
     get "/og/:slug", OGImageController, :show

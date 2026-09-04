@@ -27,8 +27,30 @@ defmodule Droodotfoo.Site do
     %{glyph: "@", label: "Contact", path: "/contact"}
   ]
 
+  @wiki_name "WIKI.DROO.FOO"
+  @wiki_tagline "Federated wiki mirror aggregating OSRS Wiki, nLab mathematics, Wikipedia, and more"
+
+  # Mirrors the dot-separated nav in DroodotfooWeb.Wiki.Layouts.site_nav/1.
+  # Glyphs are decorative, as on the main nav.
+  @wiki_nav [
+    %{glyph: "/", label: "Home", path: "/"},
+    %{glyph: "?", label: "Search", path: "/search"},
+    %{glyph: "#", label: "OSRS", path: "/osrs"},
+    %{glyph: "~", label: "nLab", path: "/nlab"},
+    %{glyph: "@", label: "droo.foo", path: "https://droo.foo"}
+  ]
+
   @spec name() :: String.t()
   def name, do: @name
+
+  @spec wiki_name() :: String.t()
+  def wiki_name, do: @wiki_name
+
+  @spec wiki_tagline() :: String.t()
+  def wiki_tagline, do: @wiki_tagline
+
+  @spec wiki_nav() :: [%{glyph: String.t(), label: String.t(), path: String.t()}]
+  def wiki_nav, do: @wiki_nav
 
   @spec tagline() :: String.t()
   def tagline, do: @tagline

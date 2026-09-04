@@ -68,6 +68,29 @@ defmodule DroodotfooWeb.OGImageControllerTest do
     end
   end
 
+  describe "GET /og/wiki.png" do
+    test "returns a 1200x630 PNG", %{conn: conn} do
+      conn = get(conn, ~p"/og/wiki.png")
+
+      assert {1200, 630} = png_dimensions(response(conn, 200))
+    end
+
+    test "is its own card, not the site card", %{conn: conn} do
+      # Also pins route order: "/og/:slug" would match "wiki.png" as an unknown
+      # slug and serve the site card, so equal bytes would mean the literal
+      # route got swallowed.
+      site = build_conn() |> get(~p"/og-image.png") |> response(200)
+      wiki = conn |> get(~p"/og/wiki.png") |> response(200)
+
+      refute site == wiki
+    end
+
+    test "the wiki card URL is absolute and tokenized" do
+      assert Droodotfoo.OG.Card.wiki_image_url() =~
+               ~r"^https://droo\.foo/og/wiki\.png\?v=[\w-]{8}$"
+    end
+  end
+
   describe "GET /og/:slug.png" do
     setup do
       [post | _] = Posts.list_posts()
@@ -98,6 +121,43 @@ defmodule DroodotfooWeb.OGImageControllerTest do
       conn = get(conn, ~p"/og/#{post.slug}")
 
       assert {1200, 630} = png_dimensions(response(conn, 200))
+    end
+
+    test "a retitled post serves a new image, not the cached one", %{conn: conn} do
+      # The render cache used to key on a subset of what the URL token covers,
+      # so a title change moved the URL while the bytes stayed put: the fresh
+      # URL served the old card and froze it into every platform proxy.
+      slug = "test-og-cache-key"
+
+      meta = %{
+        "slug" => slug,
+        "title" => "ORIGINAL TITLE",
+        "date" => "2025-01-01",
+        "description" => "d",
+        "tags" => []
+      }
+
+      on_exit(fn ->
+        File.rm(Path.join(Application.app_dir(:droodotfoo, "priv/posts"), "#{slug}.md"))
+      end)
+
+      {:ok, _} = Posts.save_post("body", meta)
+      original = conn |> get(~p"/og/#{slug <> ".png"}") |> response(200)
+
+      {:ok, _} = Posts.save_post("body", %{meta | "title" => "A COMPLETELY NEW TITLE"})
+      retitled = build_conn() |> get(~p"/og/#{slug <> ".png"}") |> response(200)
+
+      refute original == retitled
+    end
+
+    test "ignores the cache-busting v token", %{conn: conn, post: post} do
+      # Meta tags carry ?v=<token> so platform image proxies re-fetch a changed
+      # card. The token is addressed to them, and the controller must serve the
+      # current card whatever it says.
+      plain = build_conn() |> get(~p"/og/#{post.slug <> ".png"}") |> response(200)
+      tokenized = conn |> get(~p"/og/#{post.slug <> ".png"}?v=stale123") |> response(200)
+
+      assert plain == tokenized
     end
   end
 
@@ -151,10 +211,25 @@ defmodule DroodotfooWeb.OGImageControllerTest do
     test "point at the PNG card, not the SVG pattern", %{conn: _conn} do
       [post | _] = Posts.list_posts()
 
-      assert Posts.social_image_url(post) == "/og/#{post.slug}.png"
+      assert Posts.social_image_url(post) =~ ~r"^/og/#{post.slug}\.png\?v=[\w-]{8}$"
 
       # Patterns are still used for on-page decoration.
       assert Posts.pattern_url(post) =~ "/patterns/#{post.slug}"
+    end
+
+    test "the site card URL is absolute and tokenized" do
+      assert Droodotfoo.OG.Card.site_image_url() =~
+               ~r"^https://droo\.foo/og-image\.png\?v=[\w-]{8}$"
+    end
+
+    test "the rendered page carries the tokenized card URL", %{conn: conn} do
+      [post | _] = Posts.list_posts()
+
+      html = conn |> get(~p"/posts/#{post.slug}") |> html_response(200)
+
+      assert html =~
+               ~s(<meta property="og:image" content="https://droo.foo) <>
+                 Posts.social_image_url(post)
     end
   end
 end
