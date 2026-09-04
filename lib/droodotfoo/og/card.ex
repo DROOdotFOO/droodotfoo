@@ -50,6 +50,26 @@ defmodule Droodotfoo.OG.Card do
   end
 
   @doc """
+  The wiki card, for links to wiki.droo.foo.
+
+  A separate card rather than reusing `site/1`: the footer nav is rendered onto
+  the image, and the main site's paths do not exist on the wiki host.
+  """
+  @spec wiki(status()) :: t()
+  def wiki(status) do
+    %__MODULE__{
+      key: "wiki",
+      title: Site.wiki_name(),
+      tagline: Site.wiki_tagline(),
+      author: Site.author(),
+      version: Site.version(),
+      updated: Site.updated_on(),
+      status: status,
+      nav: Site.wiki_nav()
+    }
+  end
+
+  @doc """
   A post card. The title is uppercased to match the display treatment of the
   site name; the description carries through as the tagline.
   """
@@ -107,6 +127,20 @@ defmodule Droodotfoo.OG.Card do
   """
   @spec site_image_url() :: String.t()
   def site_image_url, do: "#{Config.base_url()}/og-image.png?v=#{site_token()}"
+
+  @doc """
+  Absolute, tokenized URL of the wiki card. Points at the main host because
+  that is where the OG routes are reachable from; crawlers accept an `og:image`
+  on another origin.
+  """
+  @spec wiki_image_url() :: String.t()
+  def wiki_image_url, do: "#{Config.base_url()}/og/wiki.png?v=#{wiki_token()}"
+
+  @doc """
+  Token for the wiki card.
+  """
+  @spec wiki_token() :: String.t()
+  def wiki_token, do: :online |> wiki() |> token()
 
   @doc """
   Token for a post card.

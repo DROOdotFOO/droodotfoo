@@ -68,6 +68,29 @@ defmodule DroodotfooWeb.OGImageControllerTest do
     end
   end
 
+  describe "GET /og/wiki.png" do
+    test "returns a 1200x630 PNG", %{conn: conn} do
+      conn = get(conn, ~p"/og/wiki.png")
+
+      assert {1200, 630} = png_dimensions(response(conn, 200))
+    end
+
+    test "is its own card, not the site card", %{conn: conn} do
+      # Also pins route order: "/og/:slug" would match "wiki.png" as an unknown
+      # slug and serve the site card, so equal bytes would mean the literal
+      # route got swallowed.
+      site = build_conn() |> get(~p"/og-image.png") |> response(200)
+      wiki = conn |> get(~p"/og/wiki.png") |> response(200)
+
+      refute site == wiki
+    end
+
+    test "the wiki card URL is absolute and tokenized" do
+      assert Droodotfoo.OG.Card.wiki_image_url() =~
+               ~r"^https://droo\.foo/og/wiki\.png\?v=[\w-]{8}$"
+    end
+  end
+
   describe "GET /og/:slug.png" do
     setup do
       [post | _] = Posts.list_posts()

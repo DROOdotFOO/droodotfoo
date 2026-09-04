@@ -239,19 +239,41 @@ defmodule Droodotfoo.OG.Layout do
   @doc """
   Largest size from `sizes` at which `text` wraps into at most `max_lines`.
 
-  Returns `{font_size, lines}`. If even the smallest size overflows, the text is
-  wrapped at that size and truncated with an ellipsis on the last line, so a
-  card is always produced.
+  Returns `{font_size, lines}`. Sizes that would fit only by hard-splitting a
+  word are passed over first: "WIKI.DROO.FOO" broken as "WIKI.DRO" / "O.FOO"
+  reads worse than the same title one step smaller and whole. A split is still
+  taken over nothing if no size avoids it.
+
+  If even the smallest size overflows, the text is wrapped at that size and
+  truncated with an ellipsis on the last line, so a card is always produced.
   """
   @spec fit(String.t(), [number()], number(), pos_integer(), number()) ::
           {number(), [String.t()]}
   def fit(text, sizes, max_width, max_lines, letter_spacing_em \\ 0.0) do
+    whole_word_sizes =
+      Enum.filter(sizes, fn size ->
+        longest_word(text) <= chars_per_line(max_width, size, letter_spacing_em)
+      end)
+
+    first_fit(text, whole_word_sizes, max_width, max_lines, letter_spacing_em) ||
+      first_fit(text, sizes, max_width, max_lines, letter_spacing_em) ||
+      truncate_at(text, List.last(sizes), max_width, max_lines, letter_spacing_em)
+  end
+
+  defp first_fit(text, sizes, max_width, max_lines, letter_spacing_em) do
     Enum.find_value(sizes, fn size ->
       case wrap(text, max_width, size, max_lines, letter_spacing_em) do
         {:ok, lines} -> {size, lines}
         :too_long -> nil
       end
-    end) || truncate_at(text, List.last(sizes), max_width, max_lines, letter_spacing_em)
+    end)
+  end
+
+  defp longest_word(text) do
+    text
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.map(&String.length/1)
+    |> Enum.max(fn -> 0 end)
   end
 
   defp truncate_at(text, size, max_width, max_lines, letter_spacing_em) do

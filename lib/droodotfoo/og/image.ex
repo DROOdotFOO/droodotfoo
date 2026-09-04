@@ -31,6 +31,12 @@ defmodule Droodotfoo.OG.Image do
   def site, do: fetch(Card.site(Status.get()))
 
   @doc """
+  PNG for the wiki card.
+  """
+  @spec wiki() :: {:ok, binary()} | {:error, term()}
+  def wiki, do: fetch(Card.wiki(Status.get()))
+
+  @doc """
   PNG for a post card. Falls back to the site card when the slug is unknown, so
   a stale link still unfurls with something rather than a 404 that crawlers
   cache aggressively.
@@ -50,9 +56,11 @@ defmodule Droodotfoo.OG.Image do
   @spec warm() :: :ok
   def warm do
     if Renderer.available?() do
-      cards = [
-        Card.site(Status.get()) | Enum.map(Posts.list_posts(), &Card.post(&1, Status.get()))
-      ]
+      status = Status.get()
+
+      cards =
+        [Card.site(status), Card.wiki(status)] ++
+          Enum.map(Posts.list_posts(), &Card.post(&1, status))
 
       results = Enum.map(cards, &fetch/1)
       failed = Enum.count(results, &match?({:error, _}, &1))

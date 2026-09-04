@@ -26,6 +26,11 @@ defmodule DroodotfooWeb.OGImageController do
   def index(conn, _params), do: serve(conn, &Image.site/0)
 
   @doc """
+  Wiki card: `GET /og/wiki.png`, used by the wiki.droo.foo layout.
+  """
+  def wiki(conn, _params), do: serve(conn, &Image.wiki/0)
+
+  @doc """
   Post card: `GET /og/:slug.png`.
 
   The route is declared as `/og/:slug` because a route param consumes a whole
