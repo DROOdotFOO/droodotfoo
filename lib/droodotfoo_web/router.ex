@@ -44,6 +44,12 @@ defmodule DroodotfooWeb.Router do
     plug DroodotfooWeb.Plugs.TailnetOnly
   end
 
+  # Open Graph images. Deliberately omits `plug :accepts, ["html"]` -- a
+  # crawler sending `Accept: image/png` would otherwise get a 406 and no card.
+  pipeline :og_image do
+    plug :put_secure_browser_headers
+  end
+
   # Health check routes (no auth, no rate limiting)
   scope "/health", DroodotfooWeb do
     pipe_through :api
@@ -142,6 +148,23 @@ defmodule DroodotfooWeb.Router do
     live "/wikipedia/:slug", ArticleLive, :show
     live "/art/:slug", ArticleLive, :show
     live "/machines/:slug", ArticleLive, :show
+  end
+
+  # ===========================================================================
+  # Open Graph card images (all hosts)
+  # ===========================================================================
+  # Unhosted on purpose: crawlers should get a card whichever subdomain the
+  # link points at. Plug.Static ignores these paths because its :only list is
+  # matched against the first path segment, and neither "og-image.png" nor
+  # "og" is in DroodotfooWeb.static_paths/0.
+
+  scope "/", DroodotfooWeb do
+    pipe_through :og_image
+
+    get "/og-image.png", OGImageController, :index
+    # Not "/og/:slug.png" -- a route param consumes a whole segment, so the
+    # suffix is stripped in the controller instead.
+    get "/og/:slug", OGImageController, :show
   end
 
   # ===========================================================================

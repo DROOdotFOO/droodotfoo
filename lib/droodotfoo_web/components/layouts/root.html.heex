@@ -46,8 +46,9 @@
     <meta property="og:url" content={"https://droo.foo#{assigns[:current_path] || "/"}"} />
     <meta
       property="og:image"
-      content={assigns[:og_image] || "https://droo.foo/images/og-image.png"}
+      content={assigns[:og_image] || "https://droo.foo/og-image.png"}
     />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     
@@ -70,9 +71,7 @@
     />
     <meta
       name="twitter:image"
-      content={
-        assigns[:twitter_image] || assigns[:og_image] || "https://droo.foo/images/og-image.png"
-      }
+      content={assigns[:twitter_image] || assigns[:og_image] || "https://droo.foo/og-image.png"}
     />
     
 <!-- Article-specific Meta Tags (for blog posts) -->
@@ -243,33 +242,9 @@
 
       <div class="menu-panel">
         <nav class="menu-nav" aria-label="Mobile navigation">
-          <a href="/" class="menu-item menu-nav-link">
-            <span class="menu-icon">/</span>
-            <span class="menu-label">Home</span>
-          </a>
-          <a href="/about" class="menu-item menu-nav-link">
-            <span class="menu-icon">~</span>
-            <span class="menu-label">About</span>
-          </a>
-          <a href="/now" class="menu-item menu-nav-link">
-            <span class="menu-icon">*</span>
-            <span class="menu-label">Now</span>
-          </a>
-          <a href="/projects" class="menu-item menu-nav-link">
-            <span class="menu-icon">#</span>
-            <span class="menu-label">Projects</span>
-          </a>
-          <a href="/posts" class="menu-item menu-nav-link">
-            <span class="menu-icon">&gt;</span>
-            <span class="menu-label">Writing</span>
-          </a>
-          <a href="/contact" class="menu-item menu-nav-link">
-            <span class="menu-icon">@</span>
-            <span class="menu-label">Contact</span>
-          </a>
-          <a href="/sitemap" class="menu-item menu-nav-link">
-            <span class="menu-icon">+</span>
-            <span class="menu-label">Sitemap</span>
+          <a :for={item <- Droodotfoo.Site.nav()} href={item.path} class="menu-item menu-nav-link">
+            <span class="menu-icon">{item.glyph}</span>
+            <span class="menu-label">{item.label}</span>
           </a>
         </nav>
 

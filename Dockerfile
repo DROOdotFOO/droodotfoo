@@ -37,6 +37,12 @@ ENV RUSTLER_BUILD="1"
 ENV AUTUMN_BUILD="1"
 ENV MDEX_BUILD="1"
 ENV LUMIS_BUILD="1"
+ENV RESVG_BUILD="1"
+
+# resvg's crate pins lto=true and codegen-units=1, which costs several minutes
+# on a shared builder for no runtime benefit at this image size.
+ENV CARGO_PROFILE_RELEASE_LTO="off"
+ENV CARGO_PROFILE_RELEASE_CODEGEN_UNITS="16"
 
 # prepare build dir
 WORKDIR /app

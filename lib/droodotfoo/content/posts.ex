@@ -143,22 +143,36 @@ defmodule Droodotfoo.Content.Posts do
   end
 
   @doc """
+  Get the decorative pattern URL for a post, for on-page display.
+
+  Returns SVG, which animates and scales in the browser. Not suitable for
+  social meta tags -- see `social_image_url/1`.
+  """
+  @spec pattern_url(Post.t()) :: String.t()
+  def pattern_url(%Post{slug: slug, pattern_style: pattern_style})
+      when is_binary(pattern_style) and pattern_style != "" do
+    "/patterns/#{slug}?style=#{pattern_style}"
+  end
+
+  def pattern_url(%Post{slug: slug}) do
+    "/patterns/#{slug}"
+  end
+
+  @doc """
   Get the social sharing image URL for a post.
-  Returns the featured_image if present, otherwise generates a pattern URL.
-  If pattern_style is specified in frontmatter, includes it as a query parameter.
+  Returns the featured_image if present, otherwise the generated Open Graph card.
+
+  This deliberately does not use `pattern_url/1`: that endpoint serves
+  `image/svg+xml`, which X, Slack, Discord, and LinkedIn all refuse to render as
+  a card image.
   """
   @spec social_image_url(Post.t()) :: String.t()
   def social_image_url(%Post{featured_image: image}) when is_binary(image) and image != "" do
     image
   end
 
-  def social_image_url(%Post{slug: slug, pattern_style: pattern_style})
-      when is_binary(pattern_style) and pattern_style != "" do
-    "/patterns/#{slug}?style=#{pattern_style}"
-  end
-
   def social_image_url(%Post{slug: slug}) do
-    "/patterns/#{slug}"
+    "/og/#{slug}.png"
   end
 
   @doc """
@@ -171,7 +185,7 @@ defmodule Droodotfoo.Content.Posts do
   end
 
   def social_image_alt(%Post{title: title}) do
-    "Visual pattern for: #{title}"
+    "Social card for: #{title}"
   end
 
   ## Server Callbacks
@@ -299,7 +313,7 @@ defmodule Droodotfoo.Content.Posts do
           slug: slug,
           title: Map.get(frontmatter, "title", "Untitled"),
           date: parse_date(Map.get(frontmatter, "date")),
-          modified_time: parse_date(Map.get(frontmatter, "modified_time")),
+          modified_time: parse_optional_date(Map.get(frontmatter, "modified_time")),
           description: Map.get(frontmatter, "description", ""),
           tags: Map.get(frontmatter, "tags", []),
           series: Map.get(frontmatter, "series"),
@@ -334,6 +348,12 @@ defmodule Droodotfoo.Content.Posts do
   defp parse_date(nil), do: Date.utc_today()
   defp parse_date(date) when is_binary(date), do: Date.from_iso8601!(date)
   defp parse_date(%Date{} = date), do: date
+
+  # Absent means absent. Defaulting to today would claim every post was
+  # modified on every deploy, both in `article:modified_time` and on the
+  # Open Graph card.
+  defp parse_optional_date(nil), do: nil
+  defp parse_optional_date(date), do: parse_date(date)
 
   defp calculate_read_time(markdown) do
     # Strip HTML tags, code blocks, and frontmatter to count only readable text

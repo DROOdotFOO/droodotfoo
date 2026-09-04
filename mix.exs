@@ -169,6 +169,8 @@ defmodule Droodotfoo.MixProject do
       {:swoosh, "~> 1.15"},
       # PDF generation (using system wkhtmltopdf)
       {:chromic_pdf, "~> 1.0"},
+      # SVG -> PNG rasterization for dynamic Open Graph cards
+      {:resvg, "~> 0.6"},
       # Documentation
       {:ex_doc, "~> 0.30", only: :dev, runtime: false},
       # Error tracking
