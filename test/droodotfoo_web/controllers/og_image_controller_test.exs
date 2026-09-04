@@ -123,6 +123,33 @@ defmodule DroodotfooWeb.OGImageControllerTest do
       assert {1200, 630} = png_dimensions(response(conn, 200))
     end
 
+    test "a retitled post serves a new image, not the cached one", %{conn: conn} do
+      # The render cache used to key on a subset of what the URL token covers,
+      # so a title change moved the URL while the bytes stayed put: the fresh
+      # URL served the old card and froze it into every platform proxy.
+      slug = "test-og-cache-key"
+
+      meta = %{
+        "slug" => slug,
+        "title" => "ORIGINAL TITLE",
+        "date" => "2025-01-01",
+        "description" => "d",
+        "tags" => []
+      }
+
+      on_exit(fn ->
+        File.rm(Path.join(Application.app_dir(:droodotfoo, "priv/posts"), "#{slug}.md"))
+      end)
+
+      {:ok, _} = Posts.save_post("body", meta)
+      original = conn |> get(~p"/og/#{slug <> ".png"}") |> response(200)
+
+      {:ok, _} = Posts.save_post("body", %{meta | "title" => "A COMPLETELY NEW TITLE"})
+      retitled = build_conn() |> get(~p"/og/#{slug <> ".png"}") |> response(200)
+
+      refute original == retitled
+    end
+
     test "ignores the cache-busting v token", %{conn: conn, post: post} do
       # Meta tags carry ?v=<token> so platform image proxies re-fetch a changed
       # card. The token is addressed to them, and the controller must serve the

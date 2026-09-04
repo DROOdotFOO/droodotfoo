@@ -5,11 +5,11 @@ defmodule Droodotfoo.OG.Image do
   Thin wrapper over `Performance.Cache`, in the shape of
   `Droodotfoo.Content.PatternCache`, so it needs no supervision entry of its own.
 
-  Cards are deterministic given their inputs, so the cache key carries
-  everything that appears on the image: the card identity, the app version, the
-  release date, and the current status. `Card.render_version/0` is bumped by
-  hand when the card design changes, which invalidates every cached PNG without
-  waiting for a TTL, and moves the URL token along with it.
+  Cards are deterministic given their inputs, so the cache key is
+  `Card.token/1`, the same value the image URL carries, plus the status the
+  token leaves out. `Card.render_version/0` is bumped by hand when the card
+  design changes, which invalidates every cached PNG without waiting for a TTL,
+  and moves the URL token along with it.
 
   In practice there are only a handful of distinct cards and the key changes at
   most once per deploy, so entries are written once and read forever.
@@ -88,7 +88,12 @@ defmodule Droodotfoo.OG.Image do
     end
   end
 
+  # Keyed on the same token the image URL carries, so the two can never
+  # disagree about what makes a card distinct. Keying on a subset was a bug: a
+  # post retitled without a new date moved the URL but not the key, so the
+  # fresh URL served the old bytes and froze them into every platform proxy.
+  # `key` is redundant with the token and kept only so the entry is legible.
   defp cache_key(%Card{} = card) do
-    {card.key, Card.render_version(), card.version, card.updated, card.status}
+    {card.key, Card.token(card), card.status}
   end
 end

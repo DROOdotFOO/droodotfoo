@@ -250,9 +250,11 @@ defmodule Droodotfoo.OG.Layout do
   @spec fit(String.t(), [number()], number(), pos_integer(), number()) ::
           {number(), [String.t()]}
   def fit(text, sizes, max_width, max_lines, letter_spacing_em \\ 0.0) do
+    longest = longest_word(text)
+
     whole_word_sizes =
       Enum.filter(sizes, fn size ->
-        longest_word(text) <= chars_per_line(max_width, size, letter_spacing_em)
+        longest <= chars_per_line(max_width, size, letter_spacing_em)
       end)
 
     first_fit(text, whole_word_sizes, max_width, max_lines, letter_spacing_em) ||
