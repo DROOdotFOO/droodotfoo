@@ -66,13 +66,13 @@ defmodule DroodotfooWeb.ContentComponents do
               aria-label={"#{@site_name} - Return to homepage"}
             />
           </td>
-          <td class="header-meta-label">Version</td>
-          <td class="header-meta-value header-meta-value-right">v{@version}</td>
+          <td class="header-meta-label header-meta-desktop">Version</td>
+          <td class="header-meta-value header-meta-value-right header-meta-desktop">v{@version}</td>
         </tr>
         <tr>
           <td class="header-subtitle" colspan="2">{@tagline}</td>
-          <td class="header-meta-label">Updated</td>
-          <td class="header-meta-value header-meta-value-right">
+          <td class="header-meta-label header-meta-desktop">Updated</td>
+          <td class="header-meta-value header-meta-value-right header-meta-desktop">
             <time datetime={@updated_on}>{@updated_on}</time>
           </td>
         </tr>
@@ -148,31 +148,26 @@ defmodule DroodotfooWeb.ContentComponents do
           text="About"
           aria-current={if @current_path == "/about", do: "page", else: false}
         />
-        <span aria-hidden="true">·</span>
         <.nav_link
           navigate={~p"/now"}
           text="Now"
           aria-current={if @current_path == "/now", do: "page", else: false}
         />
-        <span aria-hidden="true">·</span>
         <.nav_link
           navigate={~p"/projects"}
           text="Projects"
           aria-current={if @current_path == "/projects", do: "page", else: false}
         />
-        <span aria-hidden="true">·</span>
         <.nav_link
           navigate={~p"/posts"}
           text="Writing"
           aria-current={if String.starts_with?(@current_path, "/posts"), do: "page", else: false}
         />
-        <span aria-hidden="true">·</span>
         <.nav_link
           navigate={~p"/contact"}
           text="Contact"
           aria-current={if @current_path == "/contact", do: "page", else: false}
         />
-        <span aria-hidden="true">·</span>
         <.nav_link
           navigate={~p"/sitemap"}
           text="Sitemap"

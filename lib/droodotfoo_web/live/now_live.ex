@@ -58,9 +58,7 @@ defmodule DroodotfooWeb.NowLive do
             href="https://ethereum-magicians.org/t/erc-8262-zero-knowledge-compliance-oracle/28543"
             text="ERC-8262"
           />, the Zero-Knowledge Compliance Oracle standard we co-authored.
-          <.ext_link href="https://axol.io" text="axol.io" />
-          runs the infra. Raising. The open infrastructure side is funded through
-          <.ext_link href="https://giveth.io/project/axolio-xochifi" text="Giveth" />.
+          <.ext_link href="https://axol.io" text="axol.io" /> runs the infra. Raising.
         </p>
 
         <article class="experience-item">
@@ -144,13 +142,13 @@ defmodule DroodotfooWeb.NowLive do
 
         <h2 class="section-title">Location</h2>
         <p>
-          {@resume.personal_info.location} ({@resume.personal_info.timezone}). Remote.
+          {@resume.personal_info.location} ({@resume.personal_info.timezone}).
         </p>
 
         <p :if={@resume.availability == "open_to_consulting"} class="mt-1 text-muted">
-          Open to consulting. Ethereum protocol, ZK circuits, validator infra. <.link navigate={
+          Open to consulting: Ethereum protocol, ZK circuits, validator infra. <.link navigate={
             ~p"/about"
-          }>Background</.link>.
+          }>See background</.link>.
         </p>
 
         <hr />

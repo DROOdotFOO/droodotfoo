@@ -123,16 +123,9 @@
 
 .site-nav-simple p {
   margin: 0;
-  /* Collapse whitespace from HTML formatting */
-  font-size: 0;
-}
-
-.site-nav-simple p > * {
-  font-size: 1rem;
-}
-
-.site-nav-simple p > span {
-  margin: 0 0.5ch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 3ch;
 }
 
 .site-nav-simple a {
@@ -472,10 +465,15 @@ article blockquote strong {
   .site-header {
     /* Drop the display:table wrapper so the inner table can shrink to content */
     display: block;
-    /* Hug content and center the box horizontally */
+    /* Hug content and center the box horizontally; leave room for the fixed hamburger */
     width: fit-content;
-    max-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 7rem);
     margin: 0 auto 0.5rem;
+  }
+
+  /* Version / Updated cells are desktop-only metadata */
+  .header-meta-desktop {
+    display: none;
   }
 
   .header-table {

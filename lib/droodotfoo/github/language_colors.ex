@@ -40,7 +40,7 @@ defmodule Droodotfoo.GitHub.LanguageColors do
     "CMake" => "#DA3434",
     "Assembly" => "#6E4C13",
     "WebAssembly" => "#04133b",
-    "Noir" => "#1a1a2e",
+    "Noir" => "#8c7cff",
     "Solidity" => "#AA6746",
     "Nix" => "#7e7eff",
     "Julia" => "#a270ba",

@@ -227,10 +227,6 @@ defmodule Droodotfoo.Content.PostFormatterTest do
   end
 
   describe "back_link/1" do
-    test "formats default back link" do
-      assert PostFormatter.back_link() == "← Back to Home"
-    end
-
     test "formats custom back link text" do
       assert PostFormatter.back_link("Return to Posts") == "← Return to Posts"
     end

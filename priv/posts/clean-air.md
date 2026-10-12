@@ -127,11 +127,4 @@ What you'd build with no one watching, after [the applause stops](/posts/the-aga
 
 <p class="post-caption">Winslow Homer, <em>Breezing Up (A Fair Wind)</em> (1876). National Gallery of Art. Heeled over, everyone hiked out, the mast cropped off the top of the frame. All of it pointed forward.</p>
 
-<div class="post-cta banner-beam">
-<p class="post-cta-tag">Public goods on Giveth</p>
-<p class="post-cta-headline">Back the open infrastructure</p>
-<p class="post-cta-sub">Raxol, the ZK-compliance work, and the stealth-address primitives are open. ETH donated gets staked via DVT on hardware we already operate. Principal stays staked. Yield funds the lab permanently.</p>
-<a class="post-cta-button" href="https://giveth.io/project/axolio-xochifi" target="_blank" rel="noopener noreferrer">Donate on Giveth &rarr;</a>
-</div>
-
-_Raxol is an OTP-native multi-surface runtime for Elixir. [GitHub](https://github.com/DROOdotFOO/raxol). The agent runs on [Virtuals](https://app.virtuals.io), the payment rails through [Xochi](https://xochi.fi), and the open infrastructure through [axol.io](https://axol.io). Fund the lab on [Giveth](https://giveth.io/project/axolio-xochifi)._
+_Raxol is an OTP-native multi-surface runtime for Elixir. [GitHub](https://github.com/DROOdotFOO/raxol). The agent runs on [Virtuals](https://app.virtuals.io), the payment rails through [Xochi](https://xochi.fi), and the open infrastructure through [axol.io](https://axol.io)._

@@ -34,7 +34,6 @@
 @import "./contact_form.css";      /* Contact form */
 @import "./contributions.css";     /* Contribution graph */
 @import "./wiki.css";              /* Wiki subdomain styles */
-@import "./giveth_banner.css";     /* QF round announcement banner */
 
 /* === GLOBAL UTILITIES === */
 .spinner {

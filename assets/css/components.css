@@ -310,36 +310,8 @@
 
 .reading-progress-bar {
   height: 100%;
-  background: var(--accent-color, var(--link-color));
+  background: var(--text-color);
   width: 0%;
   transition: width 0.15s ease-out;
 }
 
-/* Ensure progress bar is visible on all themes */
-.theme-synthwave84 .reading-progress-bar {
-  background: #ff6ec7;
-}
-
-.theme-hotline .reading-progress-bar {
-  background: #f0f465;
-}
-
-.theme-matrix .reading-progress-bar {
-  background: #00ff00;
-}
-
-.theme-cyberpunk .reading-progress-bar {
-  background: #00ffff;
-}
-
-.theme-phosphor .reading-progress-bar {
-  background: #33ff33;
-}
-
-.theme-amber .reading-progress-bar {
-  background: #ffaa00;
-}
-
-.theme-high-contrast .reading-progress-bar {
-  background: #ffff00;
-}

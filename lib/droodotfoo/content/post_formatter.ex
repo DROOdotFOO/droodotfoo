@@ -34,7 +34,7 @@ defmodule Droodotfoo.Content.PostFormatter do
   Format a back link with arrow.
   """
   @spec back_link(String.t()) :: String.t()
-  def back_link(text \\ "Back to Home") do
+  def back_link(text \\ "Back to Writing") do
     "← #{text}"
   end
 

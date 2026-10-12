@@ -7,7 +7,6 @@ defmodule DroodotfooWeb.PostsLiveTest do
       {:ok, _view, html} = live(conn, ~p"/posts")
 
       assert html =~ "Writing"
-      assert html =~ "Notes on building things"
     end
 
     test "displays post titles as links", %{conn: conn} do

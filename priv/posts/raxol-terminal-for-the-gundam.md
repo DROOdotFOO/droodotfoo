@@ -305,4 +305,4 @@ My actual life goal, the one I do not usually write down in blog posts, is to bu
 
 _Raxol is an OTP-native multi-surface runtime for Elixir. [GitHub](https://github.com/DROOdotFOO/raxol)_
 
-_The payment rails run through [Xochi](https://xochi.fi). The open infrastructure runs through [axol.io](https://axol.io). Fund the lab on [Giveth](https://giveth.io/project/axolio-xochifi)._
+_The payment rails run through [Xochi](https://xochi.fi). The open infrastructure runs through [axol.io](https://axol.io)._
