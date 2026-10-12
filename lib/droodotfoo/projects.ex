@@ -9,6 +9,7 @@ defmodule Droodotfoo.Projects do
   defstruct [
     :id,
     :name,
+    :type,
     :tagline,
     :description,
     :tech_stack,
@@ -34,6 +35,7 @@ defmodule Droodotfoo.Projects do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
+          type: :portfolio | :defense,
           tagline: String.t(),
           description: String.t(),
           tech_stack: list(String.t()),
@@ -133,6 +135,7 @@ defmodule Droodotfoo.Projects do
     %__MODULE__{
       id: to_id(raw_project.name),
       name: raw_project.name,
+      type: type,
       tagline: extract_tagline_for(type, raw_project),
       description: raw_project.description,
       tech_stack: extract_tech_stack_for(type, raw_project),

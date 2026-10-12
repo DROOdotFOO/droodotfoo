@@ -153,3 +153,23 @@
     --border-color: #000000;
   }
 }
+
+/* Secondary tokens derived from each theme's own palette.
+ * Without these, muted text, alt backgrounds and the hover highlight fall
+ * through to the :root light/dark defaults in monospace.css, which depend on
+ * the OS color scheme rather than the active theme (e.g. #666 text and
+ * #f5f5f5 panels on a near-black theme when the OS is in light mode). */
+.theme-synthwave84,
+.theme-hotline,
+.theme-matrix,
+.theme-cyberpunk,
+.theme-phosphor,
+.theme-amber,
+.theme-high-contrast {
+  /* Blend toward neutral grey rather than the background so saturated primaries
+   * (magenta, pink) keep >= 4.5:1 against the background. */
+  --text-color-alt: color-mix(in srgb, var(--text-color) 60%, #999);
+  --text-muted: var(--text-color-alt);
+  --background-color-alt: color-mix(in srgb, var(--background-color) 90%, var(--text-color));
+  --highlight-color: var(--accent-color);
+}

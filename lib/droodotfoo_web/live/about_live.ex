@@ -73,7 +73,7 @@ defmodule DroodotfooWeb.AboutLive do
 
           I believe economic and digital privacy must be embedded as first class citizens in a product.
 
-          Where others find dichotomy, axolotls combinate and collaborate.
+          Where others see a tradeoff between the two, we build both.
           We co-authored
           <.ext_link
             href="https://ethereum-magicians.org/t/erc-8262-zero-knowledge-compliance-oracle/28543"
@@ -114,13 +114,6 @@ defmodule DroodotfooWeb.AboutLive do
             href="https://github.com/zed-industries/extensions/tree/main/extensions/synthwave84"
             text="synthwave84"
           />) in the Zed marketplace.
-        </p>
-        <p class="mt-1">
-          The open infrastructure underneath Xochi (Mana, the ZK compliance standard, the stealth address primitives, the whitehat research) is
-          <.ext_link
-            href="https://giveth.io/project/axolio-xochifi"
-            text="funded through Giveth"
-          />.
         </p>
 
         <%= if @languages != [] do %>
@@ -186,10 +179,7 @@ defmodule DroodotfooWeb.AboutLive do
             <article class="experience-item">
               <div class="experience-header">
                 <div class="experience-title">
-                  {edu.degree}
-                  <%= if edu[:field] do %>
-                    , {edu.field}
-                  <% end %>
+                  {Enum.join(Enum.reject([edu.degree, edu[:field]], &is_nil/1), ", ")}
                   <%= if edu[:concentration] do %>
                     ({edu.concentration})
                   <% end %>

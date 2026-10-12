@@ -81,9 +81,19 @@ defmodule DroodotfooWeb.ProjectsLive do
         <h2 class="section-title">Maintained projects</h2>
         <p class="text-muted">Open source I work on.</p>
         <div class="projects-grid">
-          <%= for project <- @projects do %>
-            <.project_card project={project} />
-          <% end %>
+          <.project_card
+            :for={project <- @projects}
+            :if={project.type == :portfolio}
+            project={project}
+          />
+        </div>
+      </section>
+
+      <section class="projects-section">
+        <h2 class="section-title">Earlier work</h2>
+        <p class="text-muted">Submarine engineering at Electric Boat, 2018 to 2020.</p>
+        <div class="projects-grid projects-grid-defense">
+          <.project_card :for={project <- @projects} :if={project.type == :defense} project={project} />
         </div>
       </section>
     </.page_layout>
@@ -109,11 +119,13 @@ defmodule DroodotfooWeb.ProjectsLive do
             <.ext_link :if={@project.github_url} href={@project.github_url} text={@project.name} />
             <span :if={!@project.github_url}>{@project.name}</span>
           </h3>
-          <span class={"project-status #{@status_info.class}"}>{@status_info.label}</span>
+          <span :if={@status_info} class={"project-status #{@status_info.class}"}>
+            {@status_info.label}
+          </span>
         </div>
 
         <div class="project-meta">
-          <span class="project-lang">
+          <span :if={@project.type == :portfolio} class="project-lang">
             <span class="lang-dot" style={"background: #{@lang_color}"}></span>
             {@lang}
           </span>
@@ -180,7 +192,7 @@ defmodule DroodotfooWeb.ProjectsLive do
   defp primary_language(%{tech_stack: [lang | _]}), do: lang
   defp primary_language(_), do: "-"
 
-  defp status_info(:active), do: %{label: "active", class: "status-active"}
+  defp status_info(:active), do: nil
   defp status_info(:completed), do: %{label: "done", class: "status-done"}
   defp status_info(:archived), do: %{label: "archived", class: "status-archived"}
 end

@@ -71,13 +71,13 @@ defmodule DroodotfooWeb.Wiki.Layouts do
               WIKI.DROO.FOO
             </.link>
           </td>
-          <td class="header-meta-label">Version</td>
-          <td class="header-meta-value header-meta-value-right">v{@version}</td>
+          <td class="header-meta-label header-meta-desktop">Version</td>
+          <td class="header-meta-value header-meta-value-right header-meta-desktop">v{@version}</td>
         </tr>
         <tr>
           <td class="header-subtitle" colspan="2">Federated wiki mirror</td>
-          <td class="header-meta-label">Updated</td>
-          <td class="header-meta-value header-meta-value-right">
+          <td class="header-meta-label header-meta-desktop">Updated</td>
+          <td class="header-meta-value header-meta-value-right header-meta-desktop">
             <time datetime={@updated_on}>{@updated_on}</time>
           </td>
         </tr>

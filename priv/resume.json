@@ -451,7 +451,7 @@
       {
         "name": "droodotfoo",
         "url": "https://github.com/DROOdotFOO/droodotfoo",
-        "description": "This site -- Phoenix LiveView with monospace web design",
+        "description": "This site: Phoenix LiveView, monospace web design",
         "language": "Elixir",
         "status": "active",
         "highlights": [

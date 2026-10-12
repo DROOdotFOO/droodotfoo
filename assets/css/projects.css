@@ -48,6 +48,10 @@ dd {
   margin: 1.5rem 0;
 }
 
+.projects-grid-defense {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .project-card {
   border: var(--border-thickness) solid var(--border-color);
   padding: 1.25rem;
@@ -280,7 +284,8 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .projects-grid {
+  .projects-grid,
+  .projects-grid-defense {
     grid-template-columns: 1fr;
     gap: 1rem;
   }

@@ -78,7 +78,7 @@ defmodule DroodotfooWeb.DroodotfooLive do
                   />
                 </h3>
                 <p class="text-muted-alt">
-                  {Date.to_string(post.date)} • {post.read_time} min read
+                  {Date.to_string(post.date)} · {post.read_time} min read
                 </p>
                 <p>{post.description}</p>
               </div>
